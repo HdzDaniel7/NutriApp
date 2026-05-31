@@ -5,6 +5,7 @@ import TiempoComida from './TiempoComida'
 import BuscadorAlimento from './BuscadorAlimento'
 
 export default function PlanConstructor() {
+  const [ultimoAgregadoId, setUltimoAgregadoId] = useState(null)
   const [vctInput, setVctInput] = useState('')
   const [plan, setPlan] = useState(null)
   const [buscadorAbierto, setBuscadorAbierto] = useState(false)
@@ -29,7 +30,14 @@ export default function PlanConstructor() {
   const handleSeleccionarAlimento = (alimento) => {
     setBuscadorAbierto(false)
     const gramos = 100
-    setPlan(prev => agregarAlimento(prev, tiempoActivo, alimento, gramos))
+    const nuevoPlan = agregarAlimento(plan, tiempoActivo, alimento, gramos)
+    setPlan(nuevoPlan)
+
+    // Obtener el id del alimento recién agregado para abrir su editor
+    const tiempo = nuevoPlan.tiempos.find(t => t.id === tiempoActivo)
+    const ultimoAlimento = tiempo?.alimentos[tiempo.alimentos.length - 1]
+    if (ultimoAlimento) setUltimoAgregadoId(ultimoAlimento.id)
+
     setTiempoActivo(null)
   }
 
@@ -159,15 +167,16 @@ export default function PlanConstructor() {
       {/* Tiempos de comida */}
       {plan.tiempos.map(tiempo => (
         <TiempoComida
-          key={tiempo.id}
-          tiempo={tiempo}
-          onAgregarAlimento={handleAgregarAlimento}
-          onEliminarAlimento={handleEliminarAlimento}
-          onActualizarGramos={(tiempoId, alimentoId, gramos, alimentoOriginal) => {
-            handleActualizarGramos(tiempoId, alimentoId, gramos, alimentoOriginal)
-          }}
-          onEliminar={handleEliminarTiempo}
-          onRenombrar={handleRenombrarTiempo}
+            key={tiempo.id}
+            tiempo={tiempo}
+            ultimoAgregadoId={ultimoAgregadoId}
+            onAgregarAlimento={handleAgregarAlimento}
+            onEliminarAlimento={handleEliminarAlimento}
+            onActualizarGramos={(tiempoId, alimentoId, gramos, alimentoOriginal) => {
+                handleActualizarGramos(tiempoId, alimentoId, gramos, alimentoOriginal)
+            }}
+            onEliminar={handleEliminarTiempo}
+            onRenombrar={handleRenombrarTiempo}
         />
       ))}
 

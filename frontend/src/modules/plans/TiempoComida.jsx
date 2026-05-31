@@ -1,11 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MEDIDAS_CASERAS, getMedidaPorGramos, getGramosPorMedida, calcularNutrientesPorPorcion } from '../../config/porciones.config'
 import { calcularTotalesTiempo } from './planUtils'
 
-export default function TiempoComida({ tiempo, onAgregarAlimento, onEliminarAlimento, onActualizarGramos, onEliminar, onRenombrar }) {
+export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimento, onEliminarAlimento, onActualizarGramos, onEliminar, onRenombrar }) {
   const [editandoNombre, setEditandoNombre] = useState(false)
   const [nuevoNombre, setNuevoNombre] = useState(tiempo.nombre)
-  const [editandoPorcion, setEditandoPorcion] = useState(null) // id del alimento que se está editando
+  const [editandoPorcion, setEditandoPorcion] = useState(null)
+
+  useEffect(() => {
+    if (ultimoAgregadoId) {
+        const existe = tiempo.alimentos.find(a => a.id === ultimoAgregadoId)
+        if (existe) setEditandoPorcion(ultimoAgregadoId)
+    }
+  }, [ultimoAgregadoId]) // id del alimento que se está editando
 
   const totales = calcularTotalesTiempo(tiempo)
 
@@ -248,7 +255,7 @@ const s = {
   elimBtn:        { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: '2px 6px', borderRadius: '4px', color: '#ef4444' },
   editorPorcion:  { marginTop: '10px', padding: '10px', background: '#f5f5f4', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '10px' },
   modoToggle:     { display: 'flex', gap: '0' },
-  modoBtn:        { flex: 1, padding: '6px', fontSize: '12px', cursor: 'pointer', border: '1px solid #d6d3d1', background: '#fff', color: '#57534e' },
+  modoBtn:        { flex: 1, padding: '6px', fontSize: '12px', cursor: 'pointer', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', background: '#fff', color: '#57534e' },
   modoBtnActive:  { background: '#f0fdf4', borderColor: '#86efac', color: '#16a34a', fontWeight: '500' },
   gramosEditor:   { display: 'flex', alignItems: 'center', gap: '8px' },
   gramosInput:    { width: '80px', padding: '6px 8px', borderRadius: '6px', border: '1px solid #d6d3d1', fontSize: '14px', outline: 'none' },
@@ -256,7 +263,7 @@ const s = {
   medidaSugerida: { fontSize: '12px', color: '#16a34a', background: '#f0fdf4', padding: '3px 8px', borderRadius: '20px' },
   medidaEditor:   { display: 'flex', flexDirection: 'column', gap: '8px' },
   medidaGrid:     { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '6px' },
-  medidaBtn:      { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', padding: '8px 4px', borderRadius: '8px', border: '1px solid #e7e5e4', background: '#fff', cursor: 'pointer' },
+  medidaBtn:      { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', padding: '8px 4px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', cursor: 'pointer' },
   medidaBtnActive:{ background: '#f0fdf4', borderColor: '#86efac' },
   medidaEmoji:    { fontSize: '18px' },
   medidaNombre:   { fontSize: '10px', color: '#57534e', textAlign: 'center', lineHeight: 1.2 },
