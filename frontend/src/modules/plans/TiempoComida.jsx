@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { MEDIDAS_CASERAS, getMedidaPorGramos, getGramosPorMedida, calcularNutrientesPorPorcion } from '../../config/porciones.config'
 import { calcularTotalesTiempo } from './planUtils'
 
-export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimento, onEliminarAlimento, onActualizarGramos, onEliminar, onRenombrar }) {
+export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimento, onEliminarAlimento, onActualizarGramos, onEliminar, onRenombrar, onGramosChangeGlobal, onGuardarGlobal }) {
   const [editandoNombre, setEditandoNombre] = useState(false)
   const [nuevoNombre, setNuevoNombre] = useState(tiempo.nombre)
   const [editandoPorcion, setEditandoPorcion] = useState(null)
+  const [gramosEnEdicion, setGramosEnEdicion] = useState({})
 
   useEffect(() => {
     if (ultimoAgregadoId) {
@@ -14,7 +15,7 @@ export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimen
     }
   }, [ultimoAgregadoId]) // id del alimento que se está editando
 
-  const totales = calcularTotalesTiempo(tiempo)
+  const totales = calcularTotalesTiempo(tiempo, gramosEnEdicion)
 
   const handleRenombrar = () => {
     if (nuevoNombre.trim()) onRenombrar(tiempo.id, nuevoNombre.trim())
@@ -83,8 +84,16 @@ export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimen
               onActualizar={(gramos, alimentoOriginal) => {
                 onActualizarGramos(tiempo.id, a.id, gramos, alimentoOriginal)
                 setEditandoPorcion(null)
+                setGramosEnEdicion(prev => { const n = {...prev}; delete n[a.id]; return n })
               }}
               onEliminar={() => onEliminarAlimento(tiempo.id, a.id)}
+              onGramosChange={(alimentoId, g) => {
+                setGramosEnEdicion(prev => ({...prev, [alimentoId]: g}))
+                if (onGramosChangeGlobal) onGramosChangeGlobal(alimentoId, g)
+              }}
+              onGuardar={(alimentoId) => {
+                if (onGuardarGlobal) onGuardarGlobal(alimentoId)
+              }}
             />
           ))}
         </div>
@@ -98,7 +107,7 @@ export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimen
 // Componente interno: fila de un alimento
 // ─────────────────────────────────────────────
 
-function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar }) {
+function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, onGramosChange }) {
   const [gramos, setGramos] = useState(entrada.porcion_gramos || 100)
   const [modoPorcion, setModoPorcion] = useState(entrada.modo_porcion || 'gramos')
   const [medidaSeleccionadaId, setMedidaSeleccionadaId] = useState(
@@ -113,13 +122,15 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar })
     setGramos(g)
     const medida = getMedidaPorGramos(g)
     setMedidaSeleccionadaId(medida?.id || null)
+    if (onGramosChange) onGramosChange(entrada.id, g)
   }
 
   const handleMedidaChange = (medidaId) => {
     const g = getGramosPorMedida(medidaId)
     if (g) {
-      setGramos(g)
-      setMedidaSeleccionadaId(medidaId)
+        setGramos(g)
+        setMedidaSeleccionadaId(medidaId)
+        if (onGramosChange) onGramosChange(entrada.id, g)
     }
   }
 

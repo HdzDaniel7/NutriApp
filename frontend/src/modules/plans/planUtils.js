@@ -160,7 +160,7 @@ export function renombrarTiempo(plan, tiempoId, nuevoNombre) {
 // CALCULAR TOTALES DEL PLAN COMPLETO
 // ─────────────────────────────────────────────
 
-export function calcularTotales(plan) {
+export function calcularTotales(plan, gramosEnEdicion = {}) {
   const totales = {
     energia_kcal: 0,
     proteina: 0,
@@ -171,18 +171,20 @@ export function calcularTotales(plan) {
 
   plan.tiempos.forEach(t => {
     t.alimentos.forEach(a => {
+      const gramosActuales = gramosEnEdicion[a.id]
+      const nutrientes = gramosActuales
+        ? calcularNutrientesPorPorcion(a.alimento_original, gramosActuales)
+        : a.nutrientes
       Object.keys(totales).forEach(key => {
-        totales[key] += a.nutrientes[key] || 0
+        totales[key] += nutrientes[key] || 0
       })
     })
   })
 
-  // Redondear totales
   Object.keys(totales).forEach(k => {
     totales[k] = Math.round(totales[k] * 10) / 10
   })
 
-  // Porcentaje de avance vs objetivo
   totales.pct_vct = plan.vct_objetivo > 0
     ? Math.round((totales.energia_kcal / plan.vct_objetivo) * 100)
     : 0
@@ -194,13 +196,19 @@ export function calcularTotales(plan) {
 // CALCULAR TOTALES POR TIEMPO DE COMIDA
 // ─────────────────────────────────────────────
 
-export function calcularTotalesTiempo(tiempo) {
-  return tiempo.alimentos.reduce((acc, a) => ({
-    energia_kcal:  Math.round((acc.energia_kcal  + (a.nutrientes.energia_kcal  || 0)) * 10) / 10,
-    proteina:      Math.round((acc.proteina      + (a.nutrientes.proteina      || 0)) * 10) / 10,
-    carbohidratos: Math.round((acc.carbohidratos + (a.nutrientes.carbohidratos || 0)) * 10) / 10,
-    grasa_total:   Math.round((acc.grasa_total   + (a.nutrientes.grasa_total   || 0)) * 10) / 10,
-  }), { energia_kcal: 0, proteina: 0, carbohidratos: 0, grasa_total: 0 })
+export function calcularTotalesTiempo(tiempo, gramosEnEdicion = {}) {
+  return tiempo.alimentos.reduce((acc, a) => {
+    const gramosActuales = gramosEnEdicion[a.id]
+    const nutrientes = gramosActuales
+      ? calcularNutrientesPorPorcion(a.alimento_original, gramosActuales)
+      : a.nutrientes
+    return {
+      energia_kcal:  Math.round((acc.energia_kcal  + (nutrientes.energia_kcal  || 0)) * 10) / 10,
+      proteina:      Math.round((acc.proteina      + (nutrientes.proteina      || 0)) * 10) / 10,
+      carbohidratos: Math.round((acc.carbohidratos + (nutrientes.carbohidratos || 0)) * 10) / 10,
+      grasa_total:   Math.round((acc.grasa_total   + (nutrientes.grasa_total   || 0)) * 10) / 10,
+    }
+  }, { energia_kcal: 0, proteina: 0, carbohidratos: 0, grasa_total: 0 })
 }
 
 // ─────────────────────────────────────────────

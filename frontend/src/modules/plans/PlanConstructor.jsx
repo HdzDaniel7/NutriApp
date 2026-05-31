@@ -12,6 +12,7 @@ export default function PlanConstructor() {
   const [tiempoActivo, setTiempoActivo] = useState(null)
   const [agregandoTiempo, setAgregandoTiempo] = useState(false)
   const [nuevoTiempoNombre, setNuevoTiempoNombre] = useState('')
+  const [gramosEnEdicionGlobal, setGramosEnEdicionGlobal] = useState({})
 
   // ── Iniciar plan ──────────────────────────────
   const iniciarPlan = () => {
@@ -70,7 +71,7 @@ export default function PlanConstructor() {
     setPlan(prev => renombrarTiempo(prev, tiempoId, nombre))
   }
 
-  const totales = plan ? calcularTotales(plan) : null
+  const totales = plan ? calcularTotales(plan, gramosEnEdicionGlobal) : null
 
   // ── Sin plan iniciado ─────────────────────────
   if (!plan) {
@@ -177,6 +178,8 @@ export default function PlanConstructor() {
             }}
             onEliminar={handleEliminarTiempo}
             onRenombrar={handleRenombrarTiempo}
+            onGramosChangeGlobal={(alimentoId, g) => setGramosEnEdicionGlobal(prev => ({...prev, [alimentoId]: g}))}
+            onGuardarGlobal={(alimentoId) => setGramosEnEdicionGlobal(prev => { const n = {...prev}; delete n[alimentoId]; return n })}
         />
       ))}
 
