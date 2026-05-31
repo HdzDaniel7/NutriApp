@@ -218,3 +218,176 @@ export function calcularTotalesTiempo(tiempo, gramosEnEdicion = {}) {
 function generarId() {
   return `${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
 }
+
+
+// ─────────────────────────────────────────────
+// MODO POR DÍA
+// ─────────────────────────────────────────────
+
+export function crearDia(nombre = null, diaACopiar = null) {
+  const id = generarId()
+  const nombreDia = nombre || `Día ${id.slice(-3)}`
+
+  // Si se copia un día existente, clonar sus tiempos profundamente
+  if (diaACopiar) {
+    return {
+      id,
+      nombre: nombreDia,
+      tiempos: diaACopiar.tiempos.map(t => ({
+        ...t,
+        id: generarId(),
+        alimentos: t.alimentos.map(a => ({ ...a, id: generarId() }))
+      }))
+    }
+  }
+
+  // Día vacío con tiempos default
+  return {
+    id,
+    nombre: nombreDia,
+    tiempos: TIEMPOS_DEFAULT.map(t => ({ ...t, alimentos: [] }))
+  }
+}
+
+export function activarModoPorDia(plan) {
+  // Convierte el plan semanal único a modo por día
+  // El plan actual se convierte en el Día 1
+  return {
+    ...plan,
+    modo: 'por_dia',
+    dias: [
+      {
+        id: generarId(),
+        nombre: 'Día 1',
+        tiempos: plan.tiempos,
+      }
+    ],
+    // Mantenemos tiempos para poder volver a semanal_unico
+    tiempos: plan.tiempos,
+  }
+}
+
+export function activarModoSemanalUnico(plan) {
+  // Vuelve a modo semanal único usando los tiempos del primer día
+  return {
+    ...plan,
+    modo: 'semanal_unico',
+    tiempos: plan.dias?.[0]?.tiempos || plan.tiempos,
+  }
+}
+
+export function agregarDia(plan, diaACopiarId = null) {
+  const diaACopiar = diaACopiarId
+    ? plan.dias.find(d => d.id === diaACopiarId)
+    : null
+  const numeroDia = plan.dias.length + 1
+  const nuevoDia = crearDia(`Día ${numeroDia}`, diaACopiar)
+  return { ...plan, dias: [...plan.dias, nuevoDia] }
+}
+
+export function eliminarDia(plan, diaId) {
+  if (plan.dias.length <= 1) return plan
+  return {
+    ...plan,
+    dias: plan.dias
+      .filter(d => d.id !== diaId)
+      .map((d, i) => ({ ...d, nombre: d.nombre.startsWith('Día') ? `Día ${i + 1}` : d.nombre }))
+  }
+}
+
+export function renombrarDia(plan, diaId, nuevoNombre) {
+  return {
+    ...plan,
+    dias: plan.dias.map(d => d.id === diaId ? { ...d, nombre: nuevoNombre } : d)
+  }
+}
+
+// Versiones de las funciones existentes pero para un día específico
+export function agregarAlimentoDia(plan, diaId, tiempoId, alimento, gramos) {
+  return {
+    ...plan,
+    dias: plan.dias.map(d =>
+      d.id === diaId
+        ? agregarAlimento(d, tiempoId, alimento, gramos)
+        : d
+    )
+  }
+}
+
+export function eliminarAlimentoDia(plan, diaId, tiempoId, alimentoId) {
+  return {
+    ...plan,
+    dias: plan.dias.map(d =>
+      d.id === diaId
+        ? eliminarAlimento(d, tiempoId, alimentoId)
+        : d
+    )
+  }
+}
+
+export function actualizarGramosDia(plan, diaId, tiempoId, alimentoId, gramos, alimentoOriginal) {
+  return {
+    ...plan,
+    dias: plan.dias.map(d =>
+      d.id === diaId
+        ? actualizarGramos(d, tiempoId, alimentoId, gramos, alimentoOriginal)
+        : d
+    )
+  }
+}
+
+export function agregarTiempoDia(plan, diaId, nombre, emoji = '🍴') {
+  return {
+    ...plan,
+    dias: plan.dias.map(d =>
+      d.id === diaId
+        ? agregarTiempo(d, nombre, emoji)
+        : d
+    )
+  }
+}
+
+export function eliminarTiempoDia(plan, diaId, tiempoId) {
+  return {
+    ...plan,
+    dias: plan.dias.map(d =>
+      d.id === diaId
+        ? eliminarTiempo(d, tiempoId)
+        : d
+    )
+  }
+}
+
+export function renombrarTiempoDia(plan, diaId, tiempoId, nuevoNombre) {
+  return {
+    ...plan,
+    dias: plan.dias.map(d =>
+      d.id === diaId
+        ? renombrarTiempo(d, tiempoId, nuevoNombre)
+        : d
+    )
+  }
+}
+
+export function calcularTotalesDia(dia, gramosEnEdicion = {}) {
+  const totales = {
+    energia_kcal: 0, proteina: 0, carbohidratos: 0,
+    grasa_total: 0, fibra_dietetica_total: 0,
+  }
+  dia.tiempos.forEach(t => {
+    t.alimentos.forEach(a => {
+      const gramosActuales = gramosEnEdicion[a.id]
+      const nutrientes = gramosActuales
+        ? calcularNutrientesPorPorcion(a.alimento_original, gramosActuales)
+        : a.nutrientes
+      Object.keys(totales).forEach(key => {
+        totales[key] += nutrientes[key] || 0
+      })
+    })
+  })
+  Object.keys(totales).forEach(k => {
+    totales[k] = Math.round(totales[k] * 10) / 10
+  })
+  totales.pct_vct = 0
+  return totales
+}
