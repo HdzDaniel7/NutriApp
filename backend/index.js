@@ -12,9 +12,11 @@ app.use(express.json())
 // Rutas
 const foodsRouter = require('./routes/foods')
 const calculatorRouter = require('./routes/calculator')
+const patientsRouter = require('./routes/patients')
 
 app.use('/api/foods', foodsRouter)
 app.use('/api/calculator', calculatorRouter)
+app.use('/api/patients', patientsRouter)
 
 // Ruta de prueba
 app.get('/api/health', (req, res) => {
