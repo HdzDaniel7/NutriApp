@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
 import Calculadora from './modules/calculator/Calculadora'
 import Alimentos from './modules/foods/Alimentos'
 import PlanConstructor from './modules/plans/PlanConstructor'
+import Pacientes from './modules/patients/Pacientes'
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
               style={({ isActive }) => isActive ? {...styles.link, ...styles.linkActive} : styles.link}>
               Constructor de Plan
             </NavLink>
+            <NavLink to="/pacientes"
+              style={({ isActive }) => isActive ? {...styles.link, ...styles.linkActive} : styles.link}>
+              Pacientes
+            </NavLink>
           </div>
         </nav>
 
@@ -31,6 +36,7 @@ function App() {
             <Route path="/" element={<Calculadora />} />
             <Route path="/alimentos" element={<Alimentos />} />
             <Route path="/plan" element={<PlanConstructor />} />
+            <Route path="/pacientes" element={<Pacientes />} />
           </Routes>
         </main>
 

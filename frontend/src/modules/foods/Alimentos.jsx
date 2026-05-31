@@ -11,7 +11,7 @@ export default function Alimentos() {
 
   // Cargar categorías al iniciar
   useEffect(() => {
-    axios.get(`${API}/foods/meta/tipos`)
+    foodsAPI.tipos()
       .then(r => setTipos(r.data))
       .catch(err => console.error(err))
   }, [])
@@ -27,7 +27,7 @@ export default function Alimentos() {
     if (busqueda) params.q = busqueda
     if (tipoSeleccionado) params.tipo = tipoSeleccionado
 
-    axios.get(`${API}/foods/search`, { params })
+    foodsAPI.search(params)
       .then(r => setAlimentos(r.data.data))
       .catch(err => console.error(err))
       .finally(() => setCargando(false))
