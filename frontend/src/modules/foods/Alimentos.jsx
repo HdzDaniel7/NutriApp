@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
-
-const API = 'http://localhost:3001/api'
+import { foodsAPI } from '../../services/api'
 
 export default function Alimentos() {
   const [busqueda, setBusqueda] = useState('')
@@ -21,8 +19,8 @@ export default function Alimentos() {
   // Buscar alimentos cuando cambia búsqueda o tipo
   useEffect(() => {
     if (!busqueda && !tipoSeleccionado) {
-      setAlimentos([])
-      return
+      const timer = setTimeout(() => setAlimentos([]), 0)
+      return () => clearTimeout(timer)
     }
     setCargando(true)
     const params = {}

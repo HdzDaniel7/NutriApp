@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
-
-const API = 'http://localhost:3001/api'
+import { foodsAPI } from '../../services/api'
 
 export default function BuscadorAlimento({ onSeleccionar, onCerrar }) {
   const [busqueda, setBusqueda] = useState('')
@@ -12,7 +10,7 @@ export default function BuscadorAlimento({ onSeleccionar, onCerrar }) {
   const inputRef = useRef(null)
 
   useEffect(() => {
-    axios.get(`${API}/foods/meta/tipos`)
+    foodsAPI.tipos()
       .then(r => setTipos(r.data))
       .catch(err => console.error(err))
     setTimeout(() => inputRef.current?.focus(), 100)
@@ -24,7 +22,7 @@ export default function BuscadorAlimento({ onSeleccionar, onCerrar }) {
     const params = {}
     if (busqueda) params.q = busqueda
     if (tipo) params.tipo = tipo
-    axios.get(`${API}/foods/search`, { params })
+    foodsAPI.search(params)
       .then(r => setResultados(r.data.data))
       .catch(err => console.error(err))
       .finally(() => setCargando(false))

@@ -9,11 +9,12 @@ export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimen
   const [gramosEnEdicion, setGramosEnEdicion] = useState({})
 
   useEffect(() => {
-    if (ultimoAgregadoId) {
-        const existe = tiempo.alimentos.find(a => a.id === ultimoAgregadoId)
-        if (existe) setEditandoPorcion(ultimoAgregadoId)
-    }
-  }, [ultimoAgregadoId]) // id del alimento que se está editando
+    if (!ultimoAgregadoId) return
+    const existe = tiempo.alimentos.find(a => a.id === ultimoAgregadoId)
+    if (!existe) return
+    const timer = setTimeout(() => setEditandoPorcion(ultimoAgregadoId), 0)
+    return () => clearTimeout(timer)
+  }, [ultimoAgregadoId])
 
   const totales = calcularTotalesTiempo(tiempo, gramosEnEdicion)
 
