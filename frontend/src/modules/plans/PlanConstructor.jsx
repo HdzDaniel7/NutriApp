@@ -1,13 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { crearPlanVacio, agregarAlimento, eliminarAlimento, actualizarGramos, agregarTiempo, eliminarTiempo, renombrarTiempo, calcularTotales, activarModoPorDia, activarModoSemanalUnico, agregarDia, eliminarDia, renombrarDia, agregarAlimentoDia, actualizarGramosDia, agregarTiempoDia, eliminarTiempoDia, renombrarTiempoDia, calcularTotalesDia } from './planUtils'
 import { TIEMPOS_SUGERIDOS } from '../../config/porciones.config'
 import TiempoComida from './TiempoComida'
 import BuscadorAlimento from './BuscadorAlimento'
+import { plansAPI, patientsAPI } from '../../services/api'
 
-export default function PlanConstructor() {
+export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null }) {
   const [ultimoAgregadoId, setUltimoAgregadoId] = useState(null)
-  const [vctInput, setVctInput] = useState('')
-  const [plan, setPlan] = useState(null)
+  const [vctInput, setVctInput] = useState(
+    planInicial?.vct_objetivo?.toString() || 
+    planInicial?.contenido?.vct_objetivo?.toString() || ''
+  )
+  const [plan, setPlan] = useState(() => {
+    if (!planInicial) return null
+    const contenido = planInicial.contenido
+    if (!contenido || !contenido.tiempos) return null
+    return contenido
+  })
+  const [editandoPlanId, setEditandoPlanId] = useState(planId)
   const [buscadorAbierto, setBuscadorAbierto] = useState(false)
   const [tiempoActivo, setTiempoActivo] = useState(null)
   const [agregandoTiempo, setAgregandoTiempo] = useState(false)
@@ -17,6 +27,9 @@ export default function PlanConstructor() {
   const [modalNuevoDia, setModalNuevoDia] = useState(false)
   const [editandoDiaNombre, setEditandoDiaNombre] = useState(null)
   const [nuevoDiaNombre, setNuevoDiaNombre] = useState('')
+  const [guardandoPlan, setGuardandoPlan] = useState(false)
+  const [planGuardado, setPlanGuardado] = useState(false)
+  const [pacienteIdPlan, setPacienteIdPlan] = useState('')
 
   const cambiarDia = (id) => {
     setDiaActivoId(id)
@@ -131,28 +144,31 @@ export default function PlanConstructor() {
       <div style={s.topBar}>
         <h1 style={s.h1}>Constructor de Planes</h1>
         <div style={s.topBarAcciones}>
-            {/* Toggle semanal único / por día */}
-            <div style={s.modoToggle}>
+          {/* Toggle semanal único / por día */}
+          <div style={s.modoToggle}>
             <button
-                style={plan.modo === 'semanal_unico' ? {...s.modoBtn, ...s.modoBtnActive} : s.modoBtn}
-                onClick={() => setPlan(prev => activarModoSemanalUnico(prev))}>
-                Semanal único
+              style={plan.modo === 'semanal_unico' ? {...s.modoBtn, ...s.modoBtnActive} : s.modoBtn}
+              onClick={() => setPlan(prev => activarModoSemanalUnico(prev))}>
+              Semanal único
             </button>
             <button
-                style={plan.modo === 'por_dia' ? {...s.modoBtn, ...s.modoBtnActive} : s.modoBtn}
-                onClick={() => {
+              style={plan.modo === 'por_dia' ? {...s.modoBtn, ...s.modoBtnActive} : s.modoBtn}
+              onClick={() => {
                 setPlan(prev => {
-                    const nuevoPlan = activarModoPorDia(prev)
-                    cambiarDia(nuevoPlan.dias[0].id)
-                    return nuevoPlan
+                  const nuevoPlan = activarModoPorDia(prev)
+                  cambiarDia(nuevoPlan.dias[0].id)
+                  return nuevoPlan
                 })
-                }}>
-                Por día
+              }}>
+              Por día
             </button>
-            </div>
-            <button style={s.resetBtn} onClick={() => setPlan(null)}>
+          </div>
+          <button style={s.guardarPlanBtn} onClick={() => setGuardandoPlan(true)}>
+            💾 Guardar plan
+          </button>
+          <button style={s.resetBtn} onClick={() => setPlan(null)}>
             Nuevo plan
-            </button>
+          </button>
         </div>
       </div>
 
@@ -368,6 +384,66 @@ export default function PlanConstructor() {
         </>
         )}
 
+        {/* Modal guardar plan */}
+        {guardandoPlan && (
+          <div style={ms.overlay} onClick={() => { setGuardandoPlan(false); setPlanGuardado(false); setPacienteIdPlan('') }}>
+            <div style={ms.modal} onClick={e => e.stopPropagation()}>
+              <div style={ms.titulo}>Guardar plan</div>
+
+              {editandoPlanId ? (
+                <div style={s.successMsg}>
+                  ✏️ Editando plan existente — se actualizará al guardar
+                </div>
+              ) : (
+                <BuscadorPaciente
+                  onSeleccionar={(paciente) => setPacienteIdPlan(paciente?.id || null)}
+                  pacienteSeleccionado={pacienteIdPlan}
+                />
+              )}
+
+              {planGuardado && (
+                <div style={s.successMsg}>✓ Plan guardado correctamente</div>
+              )}
+              <div style={ms.acciones}>
+                <button style={s.cancelarBtn} onClick={() => { setGuardandoPlan(false); setPlanGuardado(false); setPacienteIdPlan('') }}>
+                  Cancelar
+                </button>
+                <button style={s.confirmarBtn}
+                  disabled={!editandoPlanId && !pacienteIdPlan}
+                  onClick={() => {
+                    const datos = {
+                      nombre: plan.nombre || 'Plan nutricional',
+                      vct_objetivo: plan.vct_objetivo,
+                      distribucion_macros: plan.distribucion_macros,
+                      modo: plan.modo,
+                      contenido: plan,
+                    }
+
+                    const accion = editandoPlanId
+                      ? plansAPI.update(editandoPlanId, datos)
+                      : plansAPI.save(pacienteIdPlan, datos)
+
+                    if (!editandoPlanId && !pacienteIdPlan) return
+
+                    accion
+                      .then(() => {
+                        setPlanGuardado(true)
+                        setTimeout(() => {
+                          setGuardandoPlan(false)
+                          setPlanGuardado(false)
+                          setPacienteIdPlan('')
+                          if (onPlanGuardado) onPlanGuardado()
+                        }, 1500)
+                      })
+                      .catch(err => console.error(err))
+                  }}>
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Buscador modal */}
         {buscadorAbierto && (
           <BuscadorAlimento
@@ -378,6 +454,81 @@ export default function PlanConstructor() {
 
     </div>
   )
+}
+
+function BuscadorPaciente({ onSeleccionar, pacienteSeleccionado }) {
+  const [busqueda, setBusqueda] = useState('')
+  const [resultados, setResultados] = useState([])
+  const [cargando, setCargando] = useState(false)
+  const [pacienteNombre, setPacienteNombre] = useState('')
+
+  useEffect(() => {
+    if (!busqueda || busqueda.length < 2) { setResultados([]); return }
+    setCargando(true)
+    patientsAPI.list({ q: busqueda })
+      .then(r => setResultados(r.data.data))
+      .catch(err => console.error(err))
+      .finally(() => setCargando(false))
+  }, [busqueda])
+
+  const handleSeleccionar = (paciente) => {
+    onSeleccionar(paciente)
+    setPacienteNombre(`${paciente.nombre} ${paciente.apellido || ''}`.trim())
+    setBusqueda('')
+    setResultados([])
+  }
+
+  return (
+    <div style={bs.wrap}>
+      {pacienteSeleccionado ? (
+        <div style={bs.seleccionado}>
+          <span style={bs.seleccionadoNombre}>👤 {pacienteNombre}</span>
+          <button style={bs.cambiarBtn} onClick={() => { onSeleccionar(null); setPacienteNombre('') }}>
+            Cambiar
+          </button>
+        </div>
+      ) : (
+        <div style={bs.buscadorWrap}>
+          <input
+            style={bs.input}
+            type="text"
+            placeholder="Buscar paciente por nombre..."
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            autoFocus
+          />
+          {cargando && <div style={bs.msg}>Buscando...</div>}
+          {!cargando && busqueda.length >= 2 && resultados.length === 0 && (
+            <div style={bs.msg}>No se encontraron pacientes</div>
+          )}
+          {resultados.length > 0 && (
+            <div style={bs.lista}>
+              {resultados.map(p => (
+                <div key={p.id} style={bs.row} onClick={() => handleSeleccionar(p)}>
+                  <div style={bs.rowNombre}>{p.nombre} {p.apellido}</div>
+                  {p.email && <div style={bs.rowMeta}>{p.email}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const bs = {
+  wrap:              { marginBottom: '16px' },
+  buscadorWrap:      { position: 'relative' },
+  input:             { width: '100%', padding: '8px 12px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none', boxSizing: 'border-box' },
+  msg:               { fontSize: '13px', color: '#a8a29e', padding: '8px 12px' },
+  lista:             { borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', borderRadius: '8px', marginTop: '4px', overflow: 'hidden' },
+  row:               { padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f5f5f4' },
+  rowNombre:         { fontSize: '14px', fontWeight: '500', color: '#1c1917' },
+  rowMeta:           { fontSize: '12px', color: '#78716c', marginTop: '2px' },
+  seleccionado:      { display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f0fdf4', borderRadius: '8px', padding: '10px 14px' },
+  seleccionadoNombre:{ fontSize: '14px', fontWeight: '500', color: '#16a34a' },
+  cambiarBtn:        { fontSize: '12px', color: '#57534e', background: 'none', border: 'none', cursor: 'pointer' },
 }
 
 const s = {
@@ -420,6 +571,12 @@ const s = {
   diaTabWrapper:    { display: 'flex', alignItems: 'center', gap: '2px' },
   diaTabInput:      { padding: '6px 10px', borderRadius: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#86efac', fontSize: '13px', outline: 'none', width: '100px' },
   diaTabDelete:     { background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', color: '#a8a29e', padding: '2px 4px', borderRadius: '4px' },
+  guardarPlanBtn:   { padding: '6px 14px', borderRadius: '6px', border: 'none', background: '#f0fdf4', fontSize: '13px', color: '#16a34a', cursor: 'pointer', fontWeight: '500' },
+  field:            { display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' },
+  label:            { fontSize: '13px', color: '#57534e', fontWeight: '500' },
+  inputGuardar:     { padding: '8px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none' },
+  inputHint:        { fontSize: '11px', color: '#a8a29e' },
+  successMsg:       { background: '#f0fdf4', borderRadius: '6px', padding: '8px 12px', fontSize: '13px', color: '#16a34a', marginBottom: '8px' },
 }
 
 const sug = {
@@ -434,4 +591,5 @@ const ms = {
   opcionTitulo:{ fontSize: '14px', fontWeight: '500', color: '#1c1917', marginBottom: '2px' },
   opcionDesc:  { fontSize: '12px', color: '#78716c' },
   cancelar:    { padding: '8px', borderRadius: '8px', border: 'none', background: 'transparent', fontSize: '13px', color: '#78716c', cursor: 'pointer', marginTop: '4px' },
+  acciones:    { display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '8px' },
 }

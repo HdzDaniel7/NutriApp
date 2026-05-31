@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { patientsAPI } from '../../services/api'
 import FormPaciente from './FormPaciente'
+import ExpedientePaciente from './ExpedientePaciente'
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([])
@@ -8,6 +9,7 @@ export default function Pacientes() {
   const [busqueda, setBusqueda] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
   const [pacienteEditando, setPacienteEditando] = useState(null)
+  const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null)
 
   const cargarPacientes = () => {
     setCargando(true)
@@ -45,6 +47,15 @@ export default function Pacientes() {
     const nac = new Date(fechaNacimiento)
     const edad = hoy.getFullYear() - nac.getFullYear()
     return edad
+  }
+
+  if (pacienteSeleccionado) {
+    return (
+      <ExpedientePaciente
+        pacienteId={pacienteSeleccionado}
+        onVolver={() => setPacienteSeleccionado(null)}
+      />
+    )
   }
 
   return (
@@ -112,6 +123,9 @@ export default function Pacientes() {
                 <button style={s.btnSecundario} onClick={() => handleEditar(p)}>
                   Editar
                 </button>
+                <button style={s.btnExpediente} onClick={() => setPacienteSeleccionado(p.id)}>
+                  Ver expediente →
+                </button>
                 <button style={s.btnPeligro} onClick={() => handleEliminar(p.id)}>
                   Eliminar
                 </button>
@@ -158,4 +172,5 @@ const s = {
   contactoItem:    { fontSize: '12px', color: '#57534e', marginBottom: '2px' },
   pacienteNotas:   { fontSize: '12px', color: '#78716c', background: '#fafaf9', borderRadius: '6px', padding: '6px 10px', marginBottom: '10px', lineHeight: 1.5 },
   pacienteAcciones:{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px', borderTop: '1px solid #f5f5f4', paddingTop: '10px' },
+  btnExpediente:   { padding: '6px 14px', borderRadius: '6px', border: 'none', background: '#f0fdf4', fontSize: '13px', color: '#16a34a', cursor: 'pointer', fontWeight: '500' },
 }

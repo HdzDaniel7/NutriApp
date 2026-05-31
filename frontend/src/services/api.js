@@ -61,6 +61,10 @@ export const plansAPI = {
   save:         (patientId, plan) => api.post(`/patients/${patientId}/planes`, plan),
   getByPatient: (patientId)       => api.get(`/patients/${patientId}/planes`),
   getById:      (id)              => api.get(`/plans/${id}`),
+  update:       (id, plan)        => api.put(`/plans/${id}`, plan),
+  delete:       (id)              => api.delete(`/plans/${id}`),
+  duplicar:     (id)              => api.post(`/plans/${id}/duplicar`),
+  renombrar:    (id, nombre)      => api.patch(`/plans/${id}/renombrar`, { nombre }),
 }
 
 export default api

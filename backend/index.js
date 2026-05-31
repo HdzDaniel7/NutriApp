@@ -18,6 +18,9 @@ app.use('/api/foods', foodsRouter)
 app.use('/api/calculator', calculatorRouter)
 app.use('/api/patients', patientsRouter)
 
+const plansRouter = require('./routes/plans')
+app.use('/api/plans', plansRouter)
+
 // Ruta de prueba
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'NutriApp backend funcionando' })
@@ -38,3 +41,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`)
 })
+
