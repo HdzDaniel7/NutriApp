@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { crearPlanVacio, agregarAlimento, eliminarAlimento, actualizarGramos, agregarTiempo, eliminarTiempo, renombrarTiempo, calcularTotales, activarModoPorDia, activarModoSemanalUnico, agregarDia, eliminarDia, renombrarDia, agregarAlimentoDia, eliminarAlimentoDia, actualizarGramosDia, agregarTiempoDia, eliminarTiempoDia, renombrarTiempoDia, calcularTotalesDia } from './planUtils'
+import { crearPlanVacio, agregarAlimento, eliminarAlimento, actualizarGramos, agregarTiempo, eliminarTiempo, renombrarTiempo, calcularTotales, activarModoPorDia, activarModoSemanalUnico, agregarDia, eliminarDia, renombrarDia, agregarAlimentoDia, actualizarGramosDia, agregarTiempoDia, eliminarTiempoDia, renombrarTiempoDia, calcularTotalesDia } from './planUtils'
 import { TIEMPOS_SUGERIDOS } from '../../config/porciones.config'
 import TiempoComida from './TiempoComida'
 import BuscadorAlimento from './BuscadorAlimento'
