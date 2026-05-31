@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MEDIDAS_CASERAS, getMedidaPorGramos, getGramosPorMedida } from '../../config/porciones.config'
+import { MEDIDAS_CASERAS, getMedidaPorGramos, getGramosPorMedida, calcularNutrientesPorPorcion } from '../../config/porciones.config'
 import { calcularTotalesTiempo } from './planUtils'
 
 export default function TiempoComida({ tiempo, onAgregarAlimento, onEliminarAlimento, onActualizarGramos, onEliminar, onRenombrar }) {
@@ -73,8 +73,8 @@ export default function TiempoComida({ tiempo, onAgregarAlimento, onEliminarAlim
               entrada={a}
               editando={editandoPorcion === a.id}
               onEditar={() => setEditandoPorcion(editandoPorcion === a.id ? null : a.id)}
-              onActualizar={(gramos) => {
-                onActualizarGramos(tiempo.id, a.id, gramos)
+              onActualizar={(gramos, alimentoOriginal) => {
+                onActualizarGramos(tiempo.id, a.id, gramos, alimentoOriginal)
                 setEditandoPorcion(null)
               }}
               onEliminar={() => onEliminarAlimento(tiempo.id, a.id)}
@@ -119,7 +119,7 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar })
   const handleGuardar = () => {
     const g = parseFloat(gramos)
     if (!g || isNaN(g) || g <= 0) return
-    onActualizar(g)
+    onActualizar(g, entrada.alimento_original)
   }
 
   return (
@@ -132,22 +132,26 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar })
           )}
           <span style={s.porcionTexto}>
             {medidaActual
-              ? `${medidaActual.nombre} · ${entrada.porcion_gramos}g`
-              : `${entrada.porcion_gramos}g`}
+                ? `${medidaActual.nombre} · ${editando ? gramos : entrada.porcion_gramos}g`
+                : `${editando ? gramos : entrada.porcion_gramos}g`}
+            </span>
+            <span style={s.kcalPorcion}>
+            {editando
+                ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).energia_kcal
+                : entrada.nutrientes.energia_kcal} kcal
           </span>
-          <span style={s.kcalPorcion}>{entrada.nutrientes.energia_kcal} kcal</span>
         </div>
 
         <div style={s.microMacros}>
-          {[
-            { label: 'P', val: entrada.nutrientes.proteina,      color: '#2563eb' },
-            { label: 'C', val: entrada.nutrientes.carbohidratos, color: '#16a34a' },
-            { label: 'G', val: entrada.nutrientes.grasa_total,   color: '#d97706' },
-          ].map(({ label, val, color }) => (
-            <span key={label} style={{ ...s.microBadge, color }}>
-              {label}: {val ?? 0}g
-            </span>
-          ))}
+            {[
+                { label: 'P', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).proteina      : entrada.nutrientes.proteina,      color: '#2563eb' },
+                { label: 'C', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).carbohidratos : entrada.nutrientes.carbohidratos, color: '#16a34a' },
+                { label: 'G', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).grasa_total   : entrada.nutrientes.grasa_total,   color: '#d97706' },
+            ].map(({ label, val, color }) => (
+                <span key={label} style={{ ...s.microBadge, color }}>
+                {label}: {val ?? 0}g
+                </span>
+            ))}
         </div>
       </div>
 

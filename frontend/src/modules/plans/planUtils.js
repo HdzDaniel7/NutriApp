@@ -45,6 +45,7 @@ export function agregarAlimento(plan, tiempoId, alimento, gramos, modoPorcion = 
     alimento_id: alimento.id,
     descripcion: alimento.descripcion,
     tipo: alimento.tipo,
+    alimento_original: alimento,
 
     // Porción — guardamos ambos formatos para PDF futuro
     porcion_gramos: parseFloat(gramos),

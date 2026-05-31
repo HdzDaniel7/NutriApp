@@ -163,10 +163,8 @@ export default function PlanConstructor() {
           tiempo={tiempo}
           onAgregarAlimento={handleAgregarAlimento}
           onEliminarAlimento={handleEliminarAlimento}
-          onActualizarGramos={(tiempoId, alimentoId, gramos) => {
-            const tiempoObj = plan.tiempos.find(t => t.id === tiempoId)
-            const alimentoEntrada = tiempoObj?.alimentos.find(a => a.id === alimentoId)
-            handleActualizarGramos(tiempoId, alimentoId, gramos, alimentoEntrada)
+          onActualizarGramos={(tiempoId, alimentoId, gramos, alimentoOriginal) => {
+            handleActualizarGramos(tiempoId, alimentoId, gramos, alimentoOriginal)
           }}
           onEliminar={handleEliminarTiempo}
           onRenombrar={handleRenombrarTiempo}
