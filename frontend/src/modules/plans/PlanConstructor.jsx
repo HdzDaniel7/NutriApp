@@ -32,7 +32,8 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
   const [guardandoPlan, setGuardandoPlan] = useState(false)
   const [planGuardado, setPlanGuardado] = useState(false)
   const [pacienteIdPlan, setPacienteIdPlan] = useState(pacienteIdInicial || '')
-  const [nombrePlan, setPacienteNombrePlan] = useState(pacienteNombreInicial || '')
+  const [pacienteNombrePlan, setPacienteNombrePlan] = useState(pacienteNombreInicial || '')
+  const [nombrePlan, setNombrePlan] = useState(planInicial?.nombre || 'Plan nutricional')
 
   useEffect(() => {
     if (!plan) return
@@ -503,7 +504,7 @@ function BuscadorPaciente({ onSeleccionar, pacienteSeleccionado }) {
   const [pacienteNombre, setPacienteNombre] = useState('')
 
   useEffect(() => {
-    if (!busqueda || busqueda.length < 2) { setResultados([]); return }
+    if (!busqueda || busqueda.length < 1) { setResultados([]); return }
     setCargando(true)
     patientsAPI.list({ q: busqueda })
       .then(r => setResultados(r.data.data))
