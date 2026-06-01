@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { patientsAPI, consultasAPI, plansAPI } from '../../services/api'
 import { useNavigate } from 'react-router-dom'
 import GraficaEvolucion from './GraficaEvolucion'
+import { exportarPlanPDF } from '../plans/exportarPDF'
 
 export default function ExpedientePaciente({ pacienteId, onVolver }) {
   const [paciente, setPaciente] = useState(null)
@@ -417,6 +418,10 @@ function ModalVerPlan({ planId, onCerrar }) {
           )}
         </div>
         <div style={s.modalFooter}>
+          <button style={{...s.cancelarBtn}}
+            onClick={() => exportarPlanPDF({ plan, paciente: null })}>
+            📄 Exportar PDF
+          </button>
           <button style={s.guardarBtn} onClick={onCerrar}>Cerrar</button>
         </div>
       </div>

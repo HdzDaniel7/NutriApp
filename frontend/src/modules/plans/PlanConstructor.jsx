@@ -5,6 +5,7 @@ import TiempoComida from './TiempoComida'
 import BuscadorAlimento from './BuscadorAlimento'
 import { plansAPI, patientsAPI } from '../../services/api'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { exportarPlanPDF } from './exportarPDF'
 
 export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null, pacienteIdInicial = null, pacienteNombreInicial = null }) {
   const [ultimoAgregadoId, setUltimoAgregadoId] = useState(null)
@@ -182,6 +183,10 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
           </div>
           <button style={s.guardarPlanBtn} onClick={() => setGuardandoPlan(true)}>
             💾 Guardar plan
+          </button>
+          <button style={{...s.guardarPlanBtn, background:'#fef2f2', color:'#dc2626'}}
+            onClick={() => exportarPlanPDF({ plan: { ...plan, nombre: nombrePlan, vct_objetivo: plan.vct_objetivo } })}>
+            📄 Exportar PDF
           </button>
           <button style={s.resetBtn} onClick={() => setPlan(null)}>
             Nuevo plan
