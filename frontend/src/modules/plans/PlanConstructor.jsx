@@ -4,6 +4,7 @@ import { TIEMPOS_SUGERIDOS } from '../../config/porciones.config'
 import TiempoComida from './TiempoComida'
 import BuscadorAlimento from './BuscadorAlimento'
 import { plansAPI, patientsAPI } from '../../services/api'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null }) {
   const [ultimoAgregadoId, setUltimoAgregadoId] = useState(null)
@@ -30,6 +31,17 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
   const [guardandoPlan, setGuardandoPlan] = useState(false)
   const [planGuardado, setPlanGuardado] = useState(false)
   const [pacienteIdPlan, setPacienteIdPlan] = useState('')
+  const [nombrePlan, setNombrePlan] = useState(planInicial?.nombre || 'Plan nutricional')
+
+  useEffect(() => {
+    if (!plan) return
+    const handleBeforeUnload = (e) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [plan])
 
   const cambiarDia = (id) => {
     setDiaActivoId(id)
@@ -142,7 +154,12 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
   return (
     <div>
       <div style={s.topBar}>
-        <h1 style={s.h1}>Constructor de Planes</h1>
+        <input
+          style={s.nombrePlanInput}
+          value={nombrePlan}
+          onChange={e => setNombrePlan(e.target.value)}
+          placeholder="Nombre del plan"
+        />
         <div style={s.topBarAcciones}>
           {/* Toggle semanal único / por día */}
           <div style={s.modoToggle}>
@@ -188,7 +205,7 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
           <div style={s.resumenItem}>
             <div style={s.resumenLabel}>Restante</div>
             <div style={s.resumenVal}>
-              {Math.max(0, plan.vct_objetivo - totales.energia_kcal)} kcal
+              {Math.round(Math.max(0, plan.vct_objetivo - totales.energia_kcal))} kcal
             </div>
           </div>
           <div style={s.resumenItem}>
@@ -390,8 +407,12 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
             <div style={ms.modal} onClick={e => e.stopPropagation()}>
               <div style={ms.titulo}>Guardar plan</div>
 
-              {editandoPlanId ? (
-                <div style={s.successMsg}>
+              {planGuardado ? (
+                <div style={{...s.successMsg, textAlign: 'center', padding: '1rem'}}>
+                  ✓ Plan guardado correctamente
+                </div>
+              ) : editandoPlanId ? (
+                <div style={{...s.successMsg, background: '#f5f5f4', color: '#57534e'}}>
                   ✏️ Editando plan existente — se actualizará al guardar
                 </div>
               ) : (
@@ -408,11 +429,15 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
                 <button style={s.cancelarBtn} onClick={() => { setGuardandoPlan(false); setPlanGuardado(false); setPacienteIdPlan('') }}>
                   Cancelar
                 </button>
-                <button style={s.confirmarBtn}
-                  disabled={!editandoPlanId && !pacienteIdPlan}
+                <button style={{...s.confirmarBtn, opacity: (!editandoPlanId && !pacienteIdPlan) ? 0.4 : 1, cursor: (!editandoPlanId && !pacienteIdPlan) ? 'not-allowed' : 'pointer'}}
+                  disabled={false}
                   onClick={() => {
+                    if (!editandoPlanId && !pacienteIdPlan) {
+                      alert('Selecciona un paciente antes de guardar')
+                      return
+                    }
                     const datos = {
-                      nombre: plan.nombre || 'Plan nutricional',
+                      nombre: nombrePlan,
                       vct_objetivo: plan.vct_objetivo,
                       distribucion_macros: plan.distribucion_macros,
                       modo: plan.modo,
@@ -433,7 +458,7 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
                           setPlanGuardado(false)
                           setPacienteIdPlan('')
                           if (onPlanGuardado) onPlanGuardado()
-                        }, 1500)
+                        }, 900)
                       })
                       .catch(err => console.error(err))
                   }}>
@@ -559,7 +584,7 @@ const s = {
   sugeridos:        { display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' },
   nuevoTiempoAcciones: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
   cancelarBtn:      { padding: '6px 14px', borderRadius: '6px', border: '1px solid #e7e5e4', background: '#fff', fontSize: '13px', color: '#57534e', cursor: 'pointer' },
-  confirmarBtn:     { padding: '6px 14px', borderRadius: '6px', border: 'none', background: '#16a34a', color: '#fff', fontSize: '13px', cursor: 'pointer', fontWeight: '500' },
+  confirmarBtn:     { padding: '6px 14px', borderRadius: '6px', border: 'none', background: '#16a34a', color: '#fff', fontSize: '13px', cursor: 'pointer', fontWeight: '500', opacity: 1 },
   topBarAcciones:   { display: 'flex', gap: '8px', alignItems: 'center' },
   modoToggle:       { display: 'flex' },
   modoBtn:          { padding: '6px 14px', fontSize: '13px', cursor: 'pointer', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', color: '#57534e' },
@@ -577,6 +602,7 @@ const s = {
   inputGuardar:     { padding: '8px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none' },
   inputHint:        { fontSize: '11px', color: '#a8a29e' },
   successMsg:       { background: '#f0fdf4', borderRadius: '6px', padding: '8px 12px', fontSize: '13px', color: '#16a34a', marginBottom: '8px' },
+  nombrePlanInput: { fontSize: '20px', fontWeight: '600', color: '#1c1917', border: 'none', borderBottom: '2px solid transparent', outline: 'none', background: 'transparent', padding: '2px 4px', borderRadius: '4px', minWidth: '200px' },
 }
 
 const sug = {

@@ -182,7 +182,11 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
                         onClick={() => setRenombrandoPlanId(null)}>✕</button>
                     </div>
                     ) : (
-                    <div style={s.planNombre}>{p.nombre}</div>
+                    <div style={s.planNombre}
+                      onClick={() => { setRenombrandoPlanId(p.id); setNuevoPlanNombre(p.nombre) }}
+                      title="Clic para renombrar">
+                      {p.nombre} ✏️
+                    </div>
                     )}
                     <div style={s.planMeta}>
                     <span style={s.medidaBadge}>{p.vct_objetivo} kcal</span>
