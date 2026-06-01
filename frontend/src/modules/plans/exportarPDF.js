@@ -44,16 +44,33 @@ export function exportarPlanPDF({ plan, paciente = null }) {
     const nombreCompleto = `${paciente.nombre} ${paciente.apellido || ''}`.trim()
     doc.text(`Paciente: ${nombreCompleto}`, margen, y)
     y += 6
-    if (paciente.email) {
-      doc.text(`Email: ${paciente.email}`, margen, y)
-      y += 6
+
+    const infoExtra = []
+    if (paciente.email)    infoExtra.push(`Email: ${paciente.email}`)
+    if (paciente.telefono) infoExtra.push(`Tel: ${paciente.telefono}`)
+    if (paciente.sexo)     infoExtra.push(paciente.sexo === 'M' ? 'Masculino' : 'Femenino')
+    if (paciente.fecha_nacimiento) {
+        const edad = Math.floor((new Date() - new Date(paciente.fecha_nacimiento)) / (1000 * 60 * 60 * 24 * 365.25))
+        infoExtra.push(`${edad} años`)
+    }
+
+    if (infoExtra.length > 0) {
+        doc.setFontSize(9)
+        doc.text(infoExtra.join('  ·  '), margen, y)
+        y += 6
     }
   }
 
   // ── Fecha ─────────────────────────────────────
   doc.setFontSize(10)
   doc.setTextColor(...gris)
-  doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}`, margen, y)
+  const fechaExport = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
+  const fechaCreacion = plan.fecha_creacion
+    ? new Date(plan.fecha_creacion).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
+    : null
+
+    if (fechaCreacion) {
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}`, margen, y)
   y += 10
 
   // ── Resumen calórico ──────────────────────────
@@ -117,7 +134,7 @@ export function exportarPlanPDF({ plan, paciente = null }) {
     doc.setFontSize(11)
     doc.setFont('helvetica', 'bold')
     doc.setTextColor(...verde)
-    doc.text(`${tiempo.emoji || ''} ${tiempo.nombre}`, margen, y)
+    doc.text(tiempo.nombre, margen, y)
     y += 4
 
     // Calcular kcal del tiempo

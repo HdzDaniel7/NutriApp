@@ -258,10 +258,11 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
       )}
       {/* Modal ver plan */}
         {planViendoId && (
-        <ModalVerPlan
+          <ModalVerPlan
             planId={planViendoId}
+            paciente={paciente}
             onCerrar={() => setPlanViendoId(null)}
-        />
+          />
         )}
     </div>
   )
@@ -349,7 +350,7 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
   )
 }
 
-function ModalVerPlan({ planId, onCerrar }) {
+function ModalVerPlan({ planId, paciente, onCerrar }) {
   const [plan, setPlan] = useState(null)
   const [cargando, setCargando] = useState(true)
 
