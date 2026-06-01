@@ -10,8 +10,8 @@ const db = require('../db/database')
 router.get('/', (req, res) => {
   try {
     const { q } = req.query
-    let query = `SELECT * FROM pacientes WHERE activo = 1`
-    const params = []
+    let query = `SELECT * FROM pacientes WHERE activo = 1 AND usuario_id = ?`
+    const params = [req.usuario.id]
 
     if (q) {
       query += ` AND (nombre LIKE ? OR apellido LIKE ? OR email LIKE ?)`
@@ -54,9 +54,9 @@ router.post('/', (req, res) => {
 
   try {
     const result = db.prepare(`
-      INSERT INTO pacientes (nombre, apellido, fecha_nacimiento, sexo, email, telefono, notas)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(nombre, apellido, fecha_nacimiento, sexo, email, telefono, notas)
+      INSERT INTO pacientes (nombre, apellido, fecha_nacimiento, sexo, email, telefono, notas, usuario_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(nombre, apellido, fecha_nacimiento, sexo, email, telefono, notas, req.usuario.id)
 
     const paciente = db.prepare(`SELECT * FROM pacientes WHERE id = ?`).get(result.lastInsertRowid)
     res.status(201).json(paciente)
@@ -152,8 +152,8 @@ router.post('/:id/planes', (req, res) => {
 
   try {
     const result = db.prepare(`
-      INSERT INTO planes (paciente_id, consulta_id, nombre, vct_objetivo, distribucion_macros, modo, contenido)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO planes (paciente_id, consulta_id, nombre, vct_objetivo, distribucion_macros, modo, contenido, usuario_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       req.params.id,
       consulta_id || null,
@@ -161,7 +161,8 @@ router.post('/:id/planes', (req, res) => {
       vct_objetivo,
       JSON.stringify(distribucion_macros),
       modo || 'semanal_unico',
-      JSON.stringify(contenido)
+      JSON.stringify(contenido),
+      req.usuario.id
     )
 
     const plan = db.prepare(`SELECT * FROM planes WHERE id = ?`).get(result.lastInsertRowid)

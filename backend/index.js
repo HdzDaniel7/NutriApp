@@ -10,16 +10,21 @@ app.use(cors())
 app.use(express.json())
 
 // Rutas
-const foodsRouter = require('./routes/foods')
+const foodsRouter      = require('./routes/foods')
 const calculatorRouter = require('./routes/calculator')
-const patientsRouter = require('./routes/patients')
+const patientsRouter   = require('./routes/patients')
+const plansRouter      = require('./routes/plans')
+const authRouter       = require('./routes/auth')
 
+// Rutas públicas
+app.use('/api/auth', authRouter)
 app.use('/api/foods', foodsRouter)
-app.use('/api/calculator', calculatorRouter)
-app.use('/api/patients', patientsRouter)
 
-const plansRouter = require('./routes/plans')
-app.use('/api/plans', plansRouter)
+// Rutas protegidas
+const autenticar = require('./middleware/auth')
+app.use('/api/calculator', autenticar, calculatorRouter)
+app.use('/api/patients',   autenticar, patientsRouter)
+app.use('/api/plans',      autenticar, plansRouter)
 
 // Ruta de prueba
 app.get('/api/health', (req, res) => {

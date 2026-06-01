@@ -187,4 +187,4 @@ export function exportarPlanPDF({ plan, paciente = null }) {
   // ── Guardar ───────────────────────────────────
   const nombreArchivo = `${(plan.nombre || 'plan').replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
   doc.save(nombreArchivo)
-}
+}}
