@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { patientsAPI, consultasAPI, plansAPI } from '../../services/api'
 import { useNavigate } from 'react-router-dom'
+import GraficaEvolucion from './GraficaEvolucion'
 
 export default function ExpedientePaciente({ pacienteId, onVolver }) {
   const [paciente, setPaciente] = useState(null)
@@ -113,6 +114,9 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
               : <div style={s.emptyMsg}>Sin notas</div>
             }
           </div>
+          {paciente.consultas?.length >= 2 && (
+            <GraficaEvolucion consultas={paciente.consultas} />
+          )}
         </div>
       )}
 
@@ -144,6 +148,9 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
                 {c.notas && <div style={s.consultaNotas}>{c.notas}</div>}
               </div>
             ))
+          )}
+          {paciente.consultas?.length >= 2 && (
+            <GraficaEvolucion consultas={paciente.consultas} />
           )}
         </div>
       )}
