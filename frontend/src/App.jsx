@@ -62,6 +62,8 @@ function PlanWrapper() {
     <PlanConstructor
       planInicial={state.planInicial || null}
       planId={state.planId || null}
+      pacienteIdInicial={state.pacienteId || null}
+      pacienteNombreInicial={state.pacienteNombre || null}
     />
   )
 }

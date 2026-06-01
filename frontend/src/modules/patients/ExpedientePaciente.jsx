@@ -158,7 +158,14 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
       {/* Tab: Planes */}
       {tabActiva === 'planes' && (
         <div style={s.card}>
-          <div style={s.cardTitle}>Planes nutricionales</div>
+          <div style={s.cardHeader}>
+            <div style={s.cardTitle}>Planes nutricionales</div>
+            <button style={s.btnPrimario} onClick={() => navigate('/plan', {
+              state: { pacienteId: paciente.id, pacienteNombre: `${paciente.nombre} ${paciente.apellido || ''}`.trim() }
+            })}>
+              + Nuevo plan
+            </button>
+          </div>
           {paciente.planes?.length === 0 ? (
             <div style={s.emptyMsg}>Sin planes guardados</div>
           ) : (

@@ -6,7 +6,7 @@ import BuscadorAlimento from './BuscadorAlimento'
 import { plansAPI, patientsAPI } from '../../services/api'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null }) {
+export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null, pacienteIdInicial = null, pacienteNombreInicial = null }) {
   const [ultimoAgregadoId, setUltimoAgregadoId] = useState(null)
   const [vctInput, setVctInput] = useState(
     planInicial?.vct_objetivo?.toString() || 
@@ -30,8 +30,8 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
   const [nuevoDiaNombre, setNuevoDiaNombre] = useState('')
   const [guardandoPlan, setGuardandoPlan] = useState(false)
   const [planGuardado, setPlanGuardado] = useState(false)
-  const [pacienteIdPlan, setPacienteIdPlan] = useState('')
-  const [nombrePlan, setNombrePlan] = useState(planInicial?.nombre || 'Plan nutricional')
+  const [pacienteIdPlan, setPacienteIdPlan] = useState(pacienteIdInicial || '')
+  const [nombrePlan, setPacienteNombrePlan] = useState(pacienteNombreInicial || '')
 
   useEffect(() => {
     if (!plan) return
@@ -415,9 +415,19 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
                 <div style={{...s.successMsg, background: '#f5f5f4', color: '#57534e'}}>
                   ✏️ Editando plan existente — se actualizará al guardar
                 </div>
+              ) : pacienteNombrePlan ? (
+                <div style={bs.seleccionado}>
+                  <span style={bs.seleccionadoNombre}>👤 {pacienteNombrePlan}</span>
+                  <button style={bs.cambiarBtn} onClick={() => { setPacienteIdPlan(''); setPacienteNombrePlan('') }}>
+                    Cambiar
+                  </button>
+                </div>
               ) : (
                 <BuscadorPaciente
-                  onSeleccionar={(paciente) => setPacienteIdPlan(paciente?.id || null)}
+                  onSeleccionar={(paciente) => {
+                    setPacienteIdPlan(paciente?.id || null)
+                    setPacienteNombrePlan(paciente ? `${paciente.nombre} ${paciente.apellido || ''}`.trim() : '')
+                  }}
                   pacienteSeleccionado={pacienteIdPlan}
                 />
               )}
