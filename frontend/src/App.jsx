@@ -5,6 +5,7 @@ import Alimentos from './modules/foods/Alimentos'
 import PlanConstructor from './modules/plans/PlanConstructor'
 import Pacientes from './modules/patients/Pacientes'
 import Login from './modules/auth/Login'
+import Agenda from './modules/agenda/Agenda'
 
 function PlanWrapper() {
   const location = useLocation()
@@ -50,6 +51,10 @@ function Layout() {
             style={({ isActive }) => isActive ? {...styles.link, ...styles.linkActive} : styles.link}>
             Pacientes
           </NavLink>
+          <NavLink to="/agenda"
+            style={({ isActive }) => isActive ? {...styles.link, ...styles.linkActive} : styles.link}>
+            Agenda
+          </NavLink>
         </div>
         <div style={styles.navRight}>
           <span style={styles.usuarioNombre}>👤 {usuario?.nombre}</span>
@@ -62,6 +67,7 @@ function Layout() {
           <Route path="/alimentos" element={<Alimentos />} />
           <Route path="/plan"      element={<PlanWrapper />} />
           <Route path="/pacientes" element={<Pacientes />} />
+          <Route path="/agenda" element={<Agenda />} />
         </Routes>
       </main>
     </div>

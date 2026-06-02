@@ -15,6 +15,7 @@ const calculatorRouter = require('./routes/calculator')
 const patientsRouter   = require('./routes/patients')
 const plansRouter      = require('./routes/plans')
 const authRouter       = require('./routes/auth')
+const agendaRouter     = require('./routes/agenda')
 
 // Rutas públicas
 app.use('/api/auth', authRouter)
@@ -25,6 +26,7 @@ const autenticar = require('./middleware/auth')
 app.use('/api/calculator', autenticar, calculatorRouter)
 app.use('/api/patients',   autenticar, patientsRouter)
 app.use('/api/plans',      autenticar, plansRouter)
+app.use('/api/agenda',     autenticar, agendaRouter)
 
 // Ruta de prueba
 app.get('/api/health', (req, res) => {

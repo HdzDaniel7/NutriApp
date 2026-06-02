@@ -67,4 +67,18 @@ export const plansAPI = {
   renombrar:    (id, nombre)      => api.patch(`/plans/${id}/renombrar`, { nombre }),
 }
 
+// ─────────────────────────────────────────────
+// AGENDA — fase 4
+// ─────────────────────────────────────────────
+export const agendaAPI = {
+  getConfig:    ()               => api.get('/agenda/config'),
+  updateConfig: (data)           => api.put('/agenda/config', data),
+  getCitas:     (params)         => api.get('/agenda/citas', { params }),
+  getCitasMes:  (año, mes)       => api.get('/agenda/citas/mes', { params: { año, mes } }),
+  createCita:   (data)           => api.post('/agenda/citas', data),
+  updateCita:   (id, data)       => api.put(`/agenda/citas/${id}`, data),
+  deleteCita:   (id)             => api.delete(`/agenda/citas/${id}`),
+  updateEstado: (id, estado)     => api.patch(`/agenda/citas/${id}/estado`, { estado }),
+}
+
 export default api

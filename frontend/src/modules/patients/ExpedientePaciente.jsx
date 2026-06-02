@@ -420,7 +420,7 @@ function ModalVerPlan({ planId, paciente, onCerrar }) {
         </div>
         <div style={s.modalFooter}>
           <button style={{...s.cancelarBtn}}
-            onClick={() => exportarPlanPDF({ plan, paciente: null })}>
+            onClick={() => exportarPlanPDF({ plan, paciente })}>
             📄 Exportar PDF
           </button>
           <button style={s.guardarBtn} onClick={onCerrar}>Cerrar</button>
