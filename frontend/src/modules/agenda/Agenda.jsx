@@ -237,9 +237,9 @@ export default function Agenda() {
                       ) : citaEnSlot ? (
                         <div style={s.citaInfo}>
                           <div style={s.citaPaciente}>
-                            (citaEnSlot.paciente_nombre
+                            {citaEnSlot.paciente_nombre
                               ? `${citaEnSlot.paciente_nombre} ${citaEnSlot.paciente_apellido || ''}`.trim()
-                              : citaEnSlot.nombre_provisional || 'Sin paciente')
+                              : citaEnSlot.nombre_provisional || 'Sin paciente'}
                           </div>
                           <div style={s.citaAcciones}>
                             <span style={{

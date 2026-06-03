@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { crearPlanVacio, agregarAlimento, eliminarAlimento, actualizarGramos, agregarTiempo, eliminarTiempo, renombrarTiempo, calcularTotales, activarModoPorDia, activarModoSemanalUnico, agregarDia, eliminarDia, renombrarDia, agregarAlimentoDia, actualizarGramosDia, agregarTiempoDia, eliminarTiempoDia, renombrarTiempoDia, calcularTotalesDia } from './planUtils'
+import { crearPlanVacio, agregarAlimento, eliminarAlimento, actualizarGramos, agregarTiempo, eliminarTiempo, renombrarTiempo, calcularTotales, activarModoPorDia, activarModoSemanalUnico, agregarDia, eliminarDia, renombrarDia, agregarAlimentoDia, eliminarAlimentoDia, actualizarGramosDia, agregarTiempoDia, eliminarTiempoDia, renombrarTiempoDia, calcularTotalesDia } from './planUtils'
 import { TIEMPOS_SUGERIDOS } from '../../config/porciones.config'
 import TiempoComida from './TiempoComida'
 import BuscadorAlimento from './BuscadorAlimento'
@@ -93,7 +93,11 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
 
   // ── Eliminar alimento ─────────────────────────
   const handleEliminarAlimento = (tiempoId, alimentoId) => {
-    setPlan(prev => eliminarAlimento(prev, tiempoId, alimentoId))
+    if (plan.modo === 'por_dia') {
+      setPlan(prev => eliminarAlimentoDia(prev, diaActivoId, tiempoId, alimentoId))
+    } else {
+      setPlan(prev => eliminarAlimento(prev, tiempoId, alimentoId))
+    }
   }
 
   // ── Agregar tiempo de comida ──────────────────
@@ -116,9 +120,18 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
   }
 
   const totales = plan ? (() => {
-    if (plan.modo === 'por_dia' && diaActivoId) {
-      const dia = plan.dias.find(d => d.id === diaActivoId)
-      if (dia) return { ...calcularTotalesDia(dia, gramosEnEdicionGlobal), pct_vct: plan.vct_objetivo > 0 ? Math.round((calcularTotalesDia(dia, gramosEnEdicionGlobal).energia_kcal / plan.vct_objetivo) * 100) : 0 }
+    if (plan.modo === 'por_dia') {
+      const diaId = diaActivoId || plan.dias?.[0]?.id
+      const dia = plan.dias?.find(d => d.id === diaId)
+      if (dia) {
+        const t = calcularTotalesDia(dia, gramosEnEdicionGlobal)
+        return {
+          ...t,
+          pct_vct: plan.vct_objetivo > 0
+            ? Math.round((t.energia_kcal / plan.vct_objetivo) * 100)
+            : 0
+        }
+      }
     }
     return calcularTotales(plan, gramosEnEdicionGlobal)
   })() : null

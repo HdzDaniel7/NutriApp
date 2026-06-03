@@ -86,7 +86,27 @@ export function exportarPlanPDF({ plan, paciente = null }) {
   y += 6
 
   const contenido = plan.contenido || plan
-  const tiempos = contenido.tiempos || []
+  let tiempos = []
+
+  if (contenido.modo === 'por_dia' && contenido.dias?.length > 0) {
+    // Modo por día — concatenar todos los días con separadores
+    contenido.dias.forEach((dia, index) => {
+      if (dia.tiempos?.some(t => t.alimentos?.length > 0)) {
+        tiempos.push({ 
+          id: `separador_${dia.id}`,
+          nombre: dia.nombre,
+          emoji: '📅',
+          esSeparadorDia: true,
+          alimentos: []
+        })
+        dia.tiempos.forEach(t => {
+          if (t.alimentos?.length > 0) tiempos.push(t)
+        })
+      }
+    })
+  } else {
+    tiempos = contenido.tiempos || []
+  }
 
   // Calcular totales
   let totalKcal = 0, totalProt = 0, totalCarb = 0, totalGrasa = 0, totalFibra = 0
@@ -123,12 +143,21 @@ export function exportarPlanPDF({ plan, paciente = null }) {
 
   // ── Tiempos de comida ─────────────────────────
   tiempos.forEach(tiempo => {
-    if (!tiempo.alimentos || tiempo.alimentos.length === 0) return
+    if (tiempo.alimentos?.length === 0 && !tiempo.esSeparadorDia) return
 
-    // Verificar espacio en página
-    if (y > 250) {
-      doc.addPage()
-      y = margen
+    if (y > 250) { doc.addPage(); y = margen }
+
+    // Si es separador de día
+    if (tiempo.esSeparadorDia) {
+      if (y > 30) y += 4
+      doc.setFillColor(240, 253, 244)
+      doc.rect(margen, y - 4, 210 - margen * 2, 10, 'F')
+      doc.setFontSize(11)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(...verde)
+      doc.text(`📅 ${tiempo.nombre}`, margen + 2, y + 3)
+      y += 12
+      return
     }
 
     doc.setFontSize(11)
@@ -137,7 +166,6 @@ export function exportarPlanPDF({ plan, paciente = null }) {
     doc.text(tiempo.nombre, margen, y)
     y += 4
 
-    // Calcular kcal del tiempo
     const kcalTiempo = tiempo.alimentos.reduce((acc, a) => acc + (a.nutrientes?.energia_kcal || 0), 0)
     doc.setFontSize(8)
     doc.setFont('helvetica', 'normal')
@@ -163,7 +191,6 @@ export function exportarPlanPDF({ plan, paciente = null }) {
       styles: { fontSize: 8, cellPadding: 3, overflow: 'linebreak' },
       headStyles: { fillColor: [240, 253, 244], textColor: negro, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [250, 250, 249] },
-
       margin: { left: 14, right: 14 },
       tableWidth: 'auto',
     })

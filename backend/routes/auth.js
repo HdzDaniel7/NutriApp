@@ -87,4 +87,46 @@ router.get('/me', (req, res) => {
   }
 })
 
+const autenticar = require('../middleware/auth')
+
+// PUT /api/auth/perfil — actualizar nombre y email
+router.put('/perfil', autenticar, (req, res) => {
+  const { nombre, email } = req.body
+  if (!nombre) return res.status(400).json({ error: 'El nombre es requerido' })
+  try {
+    const existe = db.prepare(`SELECT id FROM usuarios WHERE email = ? AND id != ?`).get(email, req.usuario.id)
+    if (existe) return res.status(409).json({ error: 'Ese email ya está en uso' })
+
+    db.prepare(`UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?`)
+      .run(nombre, email.toLowerCase().trim(), req.usuario.id)
+
+    const usuario = db.prepare(`SELECT id, nombre, email, rol FROM usuarios WHERE id = ?`).get(req.usuario.id)
+    res.json({ usuario })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// PUT /api/auth/password — cambiar password
+router.put('/password', autenticar, (req, res) => {
+  const { password_actual, password_nuevo } = req.body
+  if (!password_actual || !password_nuevo) {
+    return res.status(400).json({ error: 'Faltan campos requeridos' })
+  }
+  if (password_nuevo.length < 6) {
+    return res.status(400).json({ error: 'El password debe tener al menos 6 caracteres' })
+  }
+  try {
+    const usuario = db.prepare(`SELECT * FROM usuarios WHERE id = ?`).get(req.usuario.id)
+    const valido = bcrypt.compareSync(password_actual, usuario.password_hash)
+    if (!valido) return res.status(401).json({ error: 'El password actual es incorrecto' })
+
+    const nuevoHash = bcrypt.hashSync(password_nuevo, 10)
+    db.prepare(`UPDATE usuarios SET password_hash = ? WHERE id = ?`).run(nuevoHash, req.usuario.id)
+    res.json({ success: true })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 module.exports = router

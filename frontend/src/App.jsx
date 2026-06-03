@@ -5,7 +5,9 @@ import Alimentos from './modules/foods/Alimentos'
 import PlanConstructor from './modules/plans/PlanConstructor'
 import Pacientes from './modules/patients/Pacientes'
 import Login from './modules/auth/Login'
+import Perfil from './modules/auth/Perfil'
 import Agenda from './modules/agenda/Agenda'
+import Dashboard from './modules/dashboard/Dashboard'
 
 function PlanWrapper() {
   const location = useLocation()
@@ -35,7 +37,7 @@ function Layout() {
       <nav style={styles.nav}>
         <span style={styles.logo}>🥗 NutriApp</span>
         <div style={styles.navLinks}>
-          <NavLink to="/"
+          <NavLink to="/calculadora"
             style={({ isActive }) => isActive ? {...styles.link, ...styles.linkActive} : styles.link}>
             Calculadora
           </NavLink>
@@ -55,19 +57,27 @@ function Layout() {
             style={({ isActive }) => isActive ? {...styles.link, ...styles.linkActive} : styles.link}>
             Agenda
           </NavLink>
+          <NavLink to="/"
+            style={({ isActive }) => isActive ? {...styles.link, ...styles.linkActive} : styles.link}>
+            Dashboard
+          </NavLink>
         </div>
         <div style={styles.navRight}>
-          <span style={styles.usuarioNombre}>👤 {usuario?.nombre}</span>
+          <NavLink to="/perfil" style={{ ...styles.usuarioNombre, textDecoration: 'none' }}>
+            👤 {usuario?.nombre}
+          </NavLink>
           <button style={styles.logoutBtn} onClick={logout}>Cerrar sesión</button>
         </div>
       </nav>
       <main style={styles.main}>
         <Routes>
-          <Route path="/"          element={<Calculadora />} />
+          <Route path="/"            element={<Dashboard />} />
+          <Route path="/calculadora" element={<Calculadora />} />
           <Route path="/alimentos" element={<Alimentos />} />
           <Route path="/plan"      element={<PlanWrapper />} />
           <Route path="/pacientes" element={<Pacientes />} />
           <Route path="/agenda" element={<Agenda />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Routes>
       </main>
     </div>
