@@ -111,14 +111,14 @@ export default function App() {
 }
 
 const styles = {
-  app:           { minHeight: '100vh', backgroundColor: '#f5f5f4', fontFamily: 'system-ui, -apple-system, sans-serif' },
-  nav:           { backgroundColor: '#ffffff', borderBottom: '1px solid #e7e5e4', padding: '0 2rem', height: '56px', display: 'flex', alignItems: 'center', gap: '2rem' },
-  logo:          { fontWeight: '600', fontSize: '18px', color: '#1c1917', flexShrink: 0 },
-  navLinks:      { display: 'flex', gap: '0.5rem', flex: 1 },
-  link:          { padding: '6px 14px', borderRadius: '6px', textDecoration: 'none', fontSize: '14px', color: '#57534e', transition: 'all 0.15s' },
-  linkActive:    { backgroundColor: '#f0fdf4', color: '#16a34a', fontWeight: '500' },
-  main:          { padding: '2rem', maxWidth: '1100px', margin: '0 auto' },
-  navRight:      { display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 },
-  usuarioNombre: { fontSize: '13px', color: '#57534e' },
-  logoutBtn:     { padding: '6px 14px', borderRadius: '6px', border: '1px solid #e7e5e4', background: '#fff', fontSize: '13px', color: '#57534e', cursor: 'pointer' },
+  app: { minHeight: '100vh', backgroundColor: '#ececec', fontFamily: 'system-ui, -apple-system, sans-serif' },
+  nav:           { backgroundColor: '#ffffff', borderBottom: '1px solid #e4e4e7', padding: '0 1.5rem', height: '52px', display: 'flex', alignItems: 'center', gap: '6px' },
+  logo:          { fontWeight: '600', fontSize: '16px', color: '#18181b', marginRight: '8px', flexShrink: 0 },
+  navLinks:      { display: 'flex', gap: '4px', flex: 1 },
+  link:          { padding: '5px 13px', borderRadius: '20px', textDecoration: 'none', fontSize: '12px', color: '#3f3f46', background: '#f4f4f5', transition: 'all 0.15s' },
+  linkActive:    { background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#fff', fontWeight: '500' },
+  main:          { padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' },
+  navRight:      { display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 },
+  usuarioNombre: { fontSize: '12px', color: '#71717a', textDecoration: 'none' },
+  logoutBtn:     { padding: '5px 13px', borderRadius: '20px', border: '1px solid #e4e4e7', background: '#fff', fontSize: '12px', color: '#3f3f46', cursor: 'pointer' },
 }

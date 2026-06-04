@@ -143,9 +143,10 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
 
   return (
     <div style={s.alimentoRow}>
-      <div style={s.alimentoInfo}>
-        <div style={s.alimentoNombre}>{entrada.descripcion}</div>
-        <div style={s.alimentoPorcion}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={s.alimentoInfo}>
+          <div style={s.alimentoNombre}>{entrada.descripcion}</div>
+          <div style={s.alimentoPorcion}>
           {medidaActual && (
             <span style={s.porcionEmoji}>{medidaActual.emoji}</span>
           )}
@@ -163,9 +164,9 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
 
         <div style={s.microMacros}>
             {[
-                { label: 'P', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).proteina      : entrada.nutrientes.proteina,      color: '#2563eb' },
-                { label: 'C', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).carbohidratos : entrada.nutrientes.carbohidratos, color: '#16a34a' },
-                { label: 'G', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).grasa_total   : entrada.nutrientes.grasa_total,   color: '#d97706' },
+                { label: 'Proteina', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).proteina      : entrada.nutrientes.proteina,      color: '#2563eb' },
+                { label: 'Carbohidratos', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).carbohidratos : entrada.nutrientes.carbohidratos, color: '#16a34a' },
+                { label: 'Grasa', val: editando ? calcularNutrientesPorPorcion(entrada.alimento_original, gramos).grasa_total   : entrada.nutrientes.grasa_total,   color: '#d97706' },
             ].map(({ label, val, color }) => (
                 <span key={label} style={{ ...s.microBadge, color }}>
                 {label}: {val ?? 0}g
@@ -173,11 +174,11 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
             ))}
         </div>
       </div>
-
       <div style={s.alimentoAcciones}>
         <button style={s.editBtn} onClick={onEditar}>✏️</button>
         <button style={s.elimBtn} onClick={onEliminar}>✕</button>
       </div>
+    </div>
 
       {editando && (
         <div style={s.editorPorcion}>
@@ -239,46 +240,43 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
 }
 
 const s = {
-  card:           { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '10px', padding: '1rem', marginBottom: '0.75rem' },
+  card: { background: '#f9f9f9', border: '0.5px solid #e0e0e0', borderRadius: '12px', padding: '12px 14px', marginBottom: '8px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' },
   header:         { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' },
   headerLeft:     { display: 'flex', alignItems: 'center', gap: '8px' },
   headerRight:    { display: 'flex', gap: '6px', alignItems: 'center' },
-  emoji:          { fontSize: '18px' },
-  nombre:         { fontSize: '15px', fontWeight: '600', color: '#1c1917', cursor: 'pointer', borderBottom: '1px dashed transparent' },
-  nombreInput:    { fontSize: '15px', fontWeight: '600', color: '#1c1917', border: 'none', borderBottom: '1px solid #86efac', outline: 'none', background: 'transparent', width: '180px' },
-  kcalTiempo:     { fontSize: '12px', color: '#57534e', background: '#f5f5f4', padding: '2px 8px', borderRadius: '20px' },
-  addBtn:         { padding: '5px 12px', borderRadius: '6px', border: '1px solid #86efac', background: '#f0fdf4', color: '#16a34a', fontSize: '13px', cursor: 'pointer', fontWeight: '500' },
-  deleteBtn:      { background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', padding: '4px', borderRadius: '4px', color: '#a8a29e' },
+  emoji:          { fontSize: '16px' },
+  nombre:         { fontSize: '13px', fontWeight: '500', color: '#18181b', cursor: 'pointer' },
+  nombreInput:    { fontSize: '13px', fontWeight: '500', color: '#18181b', border: 'none', borderBottom: '1px solid #22c55e', outline: 'none', background: 'transparent', width: '180px' },
+  kcalTiempo:     { fontSize: '11px', color: '#71717a', background: '#f4f4f5', padding: '2px 8px', borderRadius: '20px' },
+  addBtn:         { padding: '4px 12px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#fff', fontSize: '11px', cursor: 'pointer', fontWeight: '500' },
+  deleteBtn:      { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: '4px', borderRadius: '4px', color: '#d4d4d8' },
   macroRow:       { display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' },
-  macroBadge:     { fontSize: '11px', padding: '2px 8px', borderRadius: '20px', fontWeight: '500' },
-  empty:          { fontSize: '12px', color: '#a8a29e', textAlign: 'center', padding: '1rem 0' },
+  macroBadge:     { fontSize: '10px', padding: '2px 8px', borderRadius: '20px', fontWeight: '500' },
+  empty:          { fontSize: '12px', color: '#a1a1aa', textAlign: 'center', padding: '1rem 0' },
   alimentosList:  { display: 'flex', flexDirection: 'column', gap: '4px' },
-  alimentoRow:    { background: '#fafaf9', borderRadius: '8px', padding: '8px 10px' },
-  alimentoInfo:   { display: 'flex', flexDirection: 'column', gap: '3px' },
-  alimentoNombre: { fontSize: '13px', fontWeight: '500', color: '#1c1917' },
+  alimentoRow:    { background: '#ffffff', borderRadius: '8px', padding: '8px 10px', marginBottom: '4px', border: '0.5px solid #e4e4e7', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' },
+  alimentoInfo:   { display: 'flex', alignItems: 'flex-start', flexDirection: 'column', gap: '5px', flex: 1 },
+  alimentoNombre: { fontSize: '12px', fontWeight: '500', color: '#18181b', flex: 1 },
   alimentoPorcion:{ display: 'flex', alignItems: 'center', gap: '6px' },
-  porcionEmoji:   { fontSize: '14px' },
-  porcionTexto:   { fontSize: '12px', color: '#57534e' },
-  kcalPorcion:    { fontSize: '12px', color: '#57534e', fontWeight: '500', marginLeft: 'auto' },
-  microMacros:    { display: 'flex', gap: '8px' },
-  microBadge:     { fontSize: '11px', fontWeight: '500' },
+  porcionEmoji:   { fontSize: '13px' },
+  porcionTexto:   { fontSize: '11px', color: '#71717a' },
+  kcalPorcion:    { fontSize: '11px', color: '#18181b', fontWeight: '500' },
+  microMacros:    { display: 'flex', gap: '10px' },
+  microBadge:     { fontSize: '10px', fontWeight: '500' },
   alimentoAcciones: { display: 'flex', gap: '4px', justifyContent: 'flex-end', marginTop: '4px' },
-  editBtn:        { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: '2px 6px', borderRadius: '4px' },
-  elimBtn:        { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: '2px 6px', borderRadius: '4px', color: '#ef4444' },
-  editorPorcion:  { marginTop: '10px', padding: '10px', background: '#f5f5f4', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '10px' },
+  editBtn:        { background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', padding: '2px 6px', borderRadius: '4px', color: '#a1a1aa' },
+  elimBtn:        { background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', padding: '2px 6px', borderRadius: '4px', color: '#ef4444' },
+  editorPorcion:  { marginTop: '10px', padding: '10px', background: '#fff', borderRadius: '8px', border: '0.5px solid #e4e4e7', display: 'flex', flexDirection: 'column', gap: '10px' },
   modoToggle:     { display: 'flex', gap: '0' },
-  modoBtn:        { flex: 1, padding: '6px', fontSize: '12px', cursor: 'pointer', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', background: '#fff', color: '#57534e' },
-  modoBtnActive:  { background: '#f0fdf4', borderColor: '#86efac', color: '#16a34a', fontWeight: '500' },
+  modoBtn:        { flex: 1, padding: '6px', fontSize: '12px', cursor: 'pointer', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d4d4d8', background: '#fff', color: '#3f3f46' },
   gramosEditor:   { display: 'flex', alignItems: 'center', gap: '8px' },
-  gramosInput:    { width: '80px', padding: '6px 8px', borderRadius: '6px', border: '1px solid #d6d3d1', fontSize: '14px', outline: 'none' },
-  gramosLabel:    { fontSize: '13px', color: '#57534e' },
-  medidaSugerida: { fontSize: '12px', color: '#16a34a', background: '#f0fdf4', padding: '3px 8px', borderRadius: '20px' },
+  gramosInput:    { width: '80px', padding: '6px 8px', borderRadius: '6px', border: '1px solid #d4d4d8', fontSize: '14px', outline: 'none' },
+  gramosLabel:    { fontSize: '13px', color: '#71717a' },
   medidaEditor:   { display: 'flex', flexDirection: 'column', gap: '8px' },
-  medidaGrid:     { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '6px' },
-  medidaBtn:      { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', padding: '8px 4px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', cursor: 'pointer' },
-  medidaBtnActive:{ background: '#f0fdf4', borderColor: '#86efac' },
+  medidaGrid:     { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))', gap: '6px' },
+  medidaBtn:      { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', padding: '8px 4px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e4e4e7', background: '#fff', cursor: 'pointer' },
   medidaEmoji:    { fontSize: '18px' },
-  medidaNombre:   { fontSize: '10px', color: '#57534e', textAlign: 'center', lineHeight: 1.2 },
-  medidaGramos:   { fontSize: '10px', color: '#a8a29e' },
-  guardarBtn:     { padding: '7px 16px', borderRadius: '6px', border: 'none', background: '#16a34a', color: '#fff', fontSize: '13px', cursor: 'pointer', fontWeight: '500', alignSelf: 'flex-end' },
+  medidaNombre:   { fontSize: '10px', color: '#71717a', textAlign: 'center', lineHeight: 1.2 },
+  medidaGramos:   { fontSize: '10px', color: '#a1a1aa' },
+  guardarBtn:     { padding: '7px 16px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: '500', alignSelf: 'flex-end' },
 }
