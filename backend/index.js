@@ -1,9 +1,11 @@
+require('dotenv').config()
+console.log('REGISTRO_CODIGO:', process.env.REGISTRO_CODIGO)
+
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
-
 const app = express()
-require('dotenv').config()
+
 const PORT = process.env.PORT || 3001
 
 app.use(cors())

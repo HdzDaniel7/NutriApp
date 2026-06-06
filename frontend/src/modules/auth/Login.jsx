@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 export default function Login() {
   const { login, register } = useAuth()
   const [modo, setModo] = useState('login')
-  const [form, setForm] = useState({ nombre: '', email: '', password: '' })
+  const [form, setForm] = useState({nombre: '', email: '', password: '', codigo: '',})
   const [error, setError] = useState(null)
   const [cargando, setCargando] = useState(false)
 
@@ -20,7 +20,7 @@ export default function Login() {
       if (modo === 'login') {
         await login(form.email, form.password)
       } else {
-        await register(form.nombre, form.email, form.password)
+        await register(form.nombre, form.email, form.password, form.codigo)
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Error al iniciar sesión')
@@ -50,11 +50,19 @@ export default function Login() {
         </div>
 
         {modo === 'register' && (
-          <div style={s.field}>
-            <label style={s.label}>Nombre</label>
-            <input style={s.input} type="text" placeholder="Tu nombre completo"
-              value={form.nombre} onChange={e => set('nombre', e.target.value)} />
-          </div>
+          <>
+            <div style={s.field}>
+              <label style={s.label}>Nombre</label>
+              <input style={s.input} type="text" placeholder="Tu nombre completo"
+                value={form.nombre} onChange={e => set('nombre', e.target.value)} />
+            </div>
+            <div style={s.field}>
+              <label style={s.label}>Código de registro</label>
+              <input style={s.input} type="text" placeholder="Código de acceso"
+                value={form.codigo} onChange={e => set('codigo', e.target.value)} />
+              <span style={{fontSize:'11px', color:'#a1a1aa'}}>Solicita el código al administrador</span>
+            </div>
+          </>
         )}
 
         <div style={s.field}>

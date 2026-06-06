@@ -11,9 +11,14 @@ const JWT_EXPIRES = '8h'
 // POST /api/auth/register — registrar nutriólogo
 // ─────────────────────────────────────────────
 router.post('/register', (req, res) => {
-  const { nombre, email, password } = req.body
+  const { nombre, email, password, codigo } = req.body
   if (!nombre || !email || !password) {
     return res.status(400).json({ error: 'Nombre, email y password son requeridos' })
+  }
+
+  const codigoValido = process.env.REGISTRO_CODIGO
+  if (!codigoValido || codigo !== codigoValido) {
+    return res.status(403).json({ error: 'Código de registro incorrecto' })
   }
   if (password.length < 6) {
     return res.status(400).json({ error: 'El password debe tener al menos 6 caracteres' })
