@@ -42,6 +42,11 @@ export function AuthProvider({ children }) {
     return usuario
   }
 
+  const actualizarUsuario = (nuevoUsuario) => {
+    setUsuario(nuevoUsuario)
+    sessionStorage.setItem('nutriapp_usuario', JSON.stringify(nuevoUsuario))
+  }
+
   const logout = () => {
     setUsuario(null)
     setToken(null)
@@ -51,7 +56,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ usuario, token, cargando, login, register, logout }}>
+    <AuthContext.Provider value={{ usuario, token, cargando, login, register, logout, actualizarUsuario }}>
       {children}
     </AuthContext.Provider>
   )

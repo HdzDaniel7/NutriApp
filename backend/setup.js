@@ -74,7 +74,9 @@ db.exec(`
     password_hash   TEXT NOT NULL,
     rol             TEXT DEFAULT 'nutriologo',
     activo          INTEGER DEFAULT 1,
-    fecha_creacion  TEXT DEFAULT (datetime('now'))
+    fecha_creacion  TEXT DEFAULT (datetime('now')),
+    plantilla_id    TEXT DEFAULT 'moderna',
+    logo_base64     TEXT
   )
 `)
 console.log('✓ Tabla usuarios lista')

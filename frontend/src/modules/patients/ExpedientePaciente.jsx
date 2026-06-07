@@ -420,7 +420,15 @@ function ModalVerPlan({ planId, paciente, onCerrar }) {
         </div>
         <div style={s.modalFooter}>
           <button style={{...s.cancelarBtn}}
-            onClick={() => exportarPlanPDF({ plan, paciente })}>
+            onClick={() => {
+              const u = JSON.parse(sessionStorage.getItem('nutriapp_usuario') || '{}')
+              exportarPlanPDF({
+                plan,
+                paciente,
+                plantillaId: u.plantilla_id || 'moderna',
+                logoBase64: u.logo_base64 || null,
+              })
+            }}>
             📄 Exportar PDF
           </button>
           <button style={s.guardarBtn} onClick={onCerrar}>Cerrar</button>

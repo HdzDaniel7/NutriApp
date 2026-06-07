@@ -1,6 +1,4 @@
 require('dotenv').config()
-console.log('REGISTRO_CODIGO:', process.env.REGISTRO_CODIGO)
-
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
@@ -9,7 +7,8 @@ const app = express()
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ limit: '10mb', extended: true }))
 
 // Rutas
 const foodsRouter      = require('./routes/foods')

@@ -1,20 +1,21 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { getPlantilla } from '../../config/plantillas.config'
 
 // ─────────────────────────────────────────────
 // EXPORTAR PLAN NUTRICIONAL A PDF
 // Recibe el objeto plan completo y datos del paciente
 // ─────────────────────────────────────────────
 
-export function exportarPlanPDF({ plan, paciente = null }) {
+export function exportarPlanPDF({ plan, paciente = null, plantillaId = 'moderna', logoBase64 = null }) {
   const doc = new jsPDF()
   const margen = 15
   let y = margen
 
-  // ── Colores ──────────────────────────────────
-  const verde = [22, 163, 74]
-  const gris  = [120, 113, 108]
-  const negro = [28, 25, 23]
+  const plantilla = getPlantilla(plantillaId)
+  const verde = plantilla.colores.primario
+  const gris  = plantilla.colores.gris
+  const negro = plantilla.colores.texto
 
   // ── Header ───────────────────────────────────
   doc.setFillColor(...verde)
@@ -22,7 +23,16 @@ export function exportarPlanPDF({ plan, paciente = null }) {
   doc.setTextColor(255, 255, 255)
   doc.setFontSize(16)
   doc.setFont('helvetica', 'bold')
-  doc.text('NutriApp', margen, 14)
+  doc.text('NutriDesk', margen, 14)
+
+  // Logo del consultorio
+  if (logoBase64) {
+    try {
+      doc.addImage(logoBase64, 'PNG', 210 - margen - 30, 2, 30, 18)
+    } catch (e) {
+      console.warn('Error al cargar logo:', e)
+    }
+  }
   doc.setFontSize(10)
   doc.setFont('helvetica', 'normal')
   doc.text('Plan Nutricional', 210 - margen, 14, { align: 'right' })

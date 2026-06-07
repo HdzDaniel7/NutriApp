@@ -34,7 +34,7 @@ router.post('/register', (req, res) => {
       VALUES (?, ?, ?)
     `).run(nombre, email.toLowerCase().trim(), password_hash)
 
-    const usuario = db.prepare(`SELECT id, nombre, email, rol FROM usuarios WHERE id = ?`).get(result.lastInsertRowid)
+    const usuario = db.prepare(`SELECT id, nombre, email, rol, plantilla_id, logo_base64 FROM usuarios WHERE id = ?`).get(result.lastInsertRowid)
     const token = jwt.sign({ id: usuario.id, email: usuario.email, rol: usuario.rol }, JWT_SECRET, { expiresIn: JWT_EXPIRES })
 
     res.status(201).json({ usuario, token })
@@ -84,7 +84,7 @@ router.get('/me', (req, res) => {
   const token = authHeader.split(' ')[1]
   try {
     const decoded = jwt.verify(token, JWT_SECRET)
-    const usuario = db.prepare(`SELECT id, nombre, email, rol FROM usuarios WHERE id = ? AND activo = 1`).get(decoded.id)
+    const usuario = db.prepare(`SELECT id, nombre, email, rol, plantilla_id, logo_base64 FROM usuarios WHERE id = ? AND activo = 1`).get(decoded.id)
     if (!usuario) return res.status(401).json({ error: 'Usuario no encontrado' })
     res.json({ usuario })
   } catch (err) {
@@ -96,16 +96,16 @@ const autenticar = require('../middleware/auth')
 
 // PUT /api/auth/perfil — actualizar nombre y email
 router.put('/perfil', autenticar, (req, res) => {
-  const { nombre, email } = req.body
+  const { nombre, email, plantilla_id, logo_base64 } = req.body
   if (!nombre) return res.status(400).json({ error: 'El nombre es requerido' })
   try {
     const existe = db.prepare(`SELECT id FROM usuarios WHERE email = ? AND id != ?`).get(email, req.usuario.id)
     if (existe) return res.status(409).json({ error: 'Ese email ya está en uso' })
 
-    db.prepare(`UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?`)
-      .run(nombre, email.toLowerCase().trim(), req.usuario.id)
+    db.prepare(`UPDATE usuarios SET nombre = ?, email = ?, plantilla_id = ?, logo_base64 = ? WHERE id = ?`)
+      .run(nombre, email.toLowerCase().trim(), plantilla_id || 'moderna', logo_base64 || null, req.usuario.id)
 
-    const usuario = db.prepare(`SELECT id, nombre, email, rol FROM usuarios WHERE id = ?`).get(req.usuario.id)
+    const usuario = db.prepare(`SELECT id, nombre, email, rol, plantilla_id, logo_base64 FROM usuarios WHERE id = ?`).get(req.usuario.id)
     res.json({ usuario })
   } catch (err) {
     res.status(500).json({ error: err.message })
