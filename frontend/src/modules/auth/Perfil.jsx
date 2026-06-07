@@ -1,16 +1,18 @@
 import { useState, useRef } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import api from '../../services/api'
-import { PLANTILLAS } from '../../config/plantillas.config'
+import { PLANTILLAS, COLORES_PDF, POSICIONES_LOGO } from '../../config/plantillas.config'
 
 export default function Perfil() {
   const { usuario, actualizarUsuario } = useAuth()
   const [tabActiva, setTabActiva] = useState('perfil')
   const [form, setForm] = useState({
-    nombre:      usuario?.nombre      || '',
-    email:       usuario?.email       || '',
-    plantilla_id: usuario?.plantilla_id || 'moderna',
-    logo_base64: usuario?.logo_base64 || null,
+    nombre:        usuario?.nombre        || '',
+    email:         usuario?.email         || '',
+    plantilla_id:  usuario?.plantilla_id  || 'moderna',
+    logo_base64:   usuario?.logo_base64   || null,
+    color_pdf:     usuario?.color_pdf     || 'verde',
+    posicion_logo: usuario?.posicion_logo || 'superior_derecha',
   })
   const [passForm, setPassForm] = useState({
     password_actual: '', password_nuevo: '', password_confirmar: '',
@@ -133,6 +135,44 @@ export default function Perfil() {
               <span style={{ fontSize: '11px', color: '#a1a1aa' }}>
                 PNG o JPG recomendado · máx 2MB
               </span>
+              <div style={s.field}>
+                <label style={s.label}>Color principal del PDF</label>
+                <select style={{...s.input, cursor: 'pointer'}}
+                  value={form.color_pdf}
+                  onChange={e => set('color_pdf', e.target.value)}>
+                  {COLORES_PDF.map(c => (
+                    <option key={c.id} value={c.id}
+                      style={{ background: c.hex, color: '#fff', fontWeight: '500' }}>
+                      {c.nombre}
+                    </option>
+                  ))}
+                </select>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '6px' }}>
+                  {COLORES_PDF.map(c => (
+                    <div key={c.id}
+                      onClick={() => set('color_pdf', c.id)}
+                      title={c.nombre}
+                      style={{
+                        width: '28px', height: '28px', borderRadius: '50%',
+                        background: c.hex, cursor: 'pointer',
+                        borderWidth: '3px', borderStyle: 'solid',
+                        borderColor: form.color_pdf === c.id ? '#18181b' : 'transparent',
+                        transition: 'all .15s'
+                      }} />
+                  ))}
+                </div>
+              </div>
+
+              <div style={s.field}>
+                <label style={s.label}>Posición del logo en PDF</label>
+                <select style={{...s.input, cursor: 'pointer'}}
+                  value={form.posicion_logo}
+                  onChange={e => set('posicion_logo', e.target.value)}>
+                  {POSICIONES_LOGO.map(p => (
+                    <option key={p.id} value={p.id}>{p.nombre}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div style={s.field}>

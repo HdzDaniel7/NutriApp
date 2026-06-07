@@ -1,19 +1,20 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { getPlantilla } from '../../config/plantillas.config'
+import { getPlantilla, getColorPDF } from '../../config/plantillas.config'
 
 // ─────────────────────────────────────────────
 // EXPORTAR PLAN NUTRICIONAL A PDF
 // Recibe el objeto plan completo y datos del paciente
 // ─────────────────────────────────────────────
 
-export function exportarPlanPDF({ plan, paciente = null, plantillaId = 'moderna', logoBase64 = null }) {
+export function exportarPlanPDF({ plan, paciente = null, plantillaId = 'moderna', logoBase64 = null, colorId = 'verde', posicionLogo = 'superior_derecha' }) {
   const doc = new jsPDF()
   const margen = 15
   let y = margen
 
   const plantilla = getPlantilla(plantillaId)
-  const verde = plantilla.colores.primario
+  const colorObj = getColorPDF(colorId)
+  const verde = colorObj.rgb
   const gris  = plantilla.colores.gris
   const negro = plantilla.colores.texto
 
@@ -28,7 +29,13 @@ export function exportarPlanPDF({ plan, paciente = null, plantillaId = 'moderna'
   // Logo del consultorio
   if (logoBase64) {
     try {
-      doc.addImage(logoBase64, 'PNG', 210 - margen - 30, 2, 30, 18)
+      const logoW = 30, logoH = 18
+      let logoX, logoY
+      if (posicionLogo === 'superior_derecha')   { logoX = 210 - margen - logoW; logoY = 2 }
+      if (posicionLogo === 'superior_izquierda') { logoX = margen;               logoY = 2 }
+      if (posicionLogo === 'inferior_derecha')   { logoX = 210 - margen - logoW; logoY = 277 }
+      if (posicionLogo === 'inferior_izquierda') { logoX = margen;               logoY = 277 }
+      doc.addImage(logoBase64, 'PNG', logoX, logoY, logoW, logoH)
     } catch (e) {
       console.warn('Error al cargar logo:', e)
     }

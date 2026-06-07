@@ -425,8 +425,10 @@ function ModalVerPlan({ planId, paciente, onCerrar }) {
               exportarPlanPDF({
                 plan,
                 paciente,
-                plantillaId: u.plantilla_id || 'moderna',
-                logoBase64: u.logo_base64 || null,
+                plantillaId:  u.plantilla_id  || 'moderna',
+                logoBase64:   u.logo_base64   || null,
+                colorId:      u.color_pdf     || 'verde',
+                posicionLogo: u.posicion_logo || 'superior_derecha',
               })
             }}>
             📄 Exportar PDF

@@ -203,8 +203,10 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
               const u = JSON.parse(sessionStorage.getItem('nutriapp_usuario') || '{}')
               exportarPlanPDF({
                 plan: { ...plan, nombre: nombrePlan, vct_objetivo: plan.vct_objetivo },
-                plantillaId: u.plantilla_id || 'moderna',
-                logoBase64: u.logo_base64 || null,
+                plantillaId:  u.plantilla_id  || 'moderna',
+                logoBase64:   u.logo_base64   || null,
+                colorId:      u.color_pdf     || 'verde',
+                posicionLogo: u.posicion_logo || 'superior_derecha',
               })
             }}>
             📄 Exportar PDF
