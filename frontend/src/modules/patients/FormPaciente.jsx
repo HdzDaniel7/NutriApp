@@ -121,9 +121,9 @@ const s = {
   textarea:    { padding: '8px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none', resize: 'vertical', fontFamily: 'inherit' },
   toggle:      { display: 'flex' },
   toggleBtn:   { flex: 1, padding: '8px', fontSize: '13px', cursor: 'pointer', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', background: '#fafaf9', color: '#57534e' },
-  toggleActive:{ background: '#f0fdf4', borderColor: '#86efac', color: '#16a34a', fontWeight: '500' },
+  toggleActive:{ background: 'var(--color-primario-bg)', borderColor: 'var(--color-primario-border)', color: 'var(--color-primario)', fontWeight: '500' },
   error:       { background: '#fef2f2', borderRadius: '6px', padding: '8px 12px', fontSize: '13px', color: '#ef4444' },
   footer:      { display: 'flex', gap: '8px', justifyContent: 'flex-end', padding: '1rem 1.5rem', borderTop: '1px solid #e7e5e4' },
   cancelarBtn: { padding: '8px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', fontSize: '14px', color: '#57534e', cursor: 'pointer' },
-  guardarBtn:  { padding: '8px 20px', borderRadius: '8px', border: 'none', background: '#16a34a', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '500' },
+  guardarBtn:  { padding: '8px 20px', borderRadius: '8px', border: 'none', background: 'var(--color-primario)', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '500' },
 }

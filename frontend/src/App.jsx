@@ -116,7 +116,7 @@ const styles = {
   logo:          { fontWeight: '600', fontSize: '16px', color: '#18181b', marginRight: '8px', flexShrink: 0 },
   navLinks:      { display: 'flex', gap: '4px', flex: 1 },
   link:          { padding: '5px 13px', borderRadius: '20px', textDecoration: 'none', fontSize: '12px', color: '#3f3f46', background: '#f4f4f5', transition: 'all 0.15s' },
-  linkActive:    { background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#fff', fontWeight: '500' },
+  linkActive:    { background: 'linear-gradient(135deg, var(--color-primario-light), var(--color-primario))', color: '#fff', fontWeight: '500' },
   main:          { padding: '1.5rem', maxWidth: '1200px', margin: '0 auto' },
   navRight:      { display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 },
   usuarioNombre: { fontSize: '12px', color: '#71717a', textDecoration: 'none' },

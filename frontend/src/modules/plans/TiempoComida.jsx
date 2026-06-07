@@ -186,7 +186,7 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
             {['gramos', 'medida_casera'].map(m => (
               <button key={m} onClick={() => setModoPorcion(m)}
                 style={modoPorcion === m
-                  ? { ...s.modoBtn, background: '#f0fdf4', borderColor: '#86efac', color: '#16a34a', fontWeight: '500' }
+                  ? { ...s.modoBtn, background: '#f0fdf4', borderColor: 'var(--color-primario-border)', color: 'var(--color-primario)', fontWeight: '500' }
                   : s.modoBtn}>
                 {m === 'gramos' ? 'Gramos' : 'Medida casera'}
               </button>
@@ -212,7 +212,7 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
                   <button key={m.id} onClick={() => handleMedidaChange(m.id)}
                     title={m.uso_tipico}
                     style={medidaSeleccionadaId === m.id
-                      ? { ...s.medidaBtn, background: '#f0fdf4', borderColor: '#86efac' }
+                      ? { ...s.medidaBtn, background: '#f0fdf4', borderColor: 'var(--color-primario-border)' }
                       : s.medidaBtn}>
                     <span style={s.medidaEmoji}>{m.emoji}</span>
                     <span style={s.medidaNombre}>{m.nombre}</span>
@@ -246,9 +246,9 @@ const s = {
   headerRight:    { display: 'flex', gap: '6px', alignItems: 'center' },
   emoji:          { fontSize: '16px' },
   nombre:         { fontSize: '13px', fontWeight: '500', color: '#18181b', cursor: 'pointer' },
-  nombreInput:    { fontSize: '13px', fontWeight: '500', color: '#18181b', border: 'none', borderBottom: '1px solid #22c55e', outline: 'none', background: 'transparent', width: '180px' },
+  nombreInput:    { fontSize: '13px', fontWeight: '500', color: '#18181b', border: 'none', borderBottom: '1px solid var(--color-primario-light)', outline: 'none', background: 'transparent', width: '180px' },
   kcalTiempo:     { fontSize: '11px', color: '#71717a', background: '#f4f4f5', padding: '2px 8px', borderRadius: '20px' },
-  addBtn:         { padding: '4px 12px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#fff', fontSize: '11px', cursor: 'pointer', fontWeight: '500' },
+  addBtn:         { padding: '4px 12px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, var(--color-primario-light), var(--color-primario))', color: '#fff', fontSize: '11px', cursor: 'pointer', fontWeight: '500' },
   deleteBtn:      { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: '4px', borderRadius: '4px', color: '#d4d4d8' },
   macroRow:       { display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' },
   macroBadge:     { fontSize: '10px', padding: '2px 8px', borderRadius: '20px', fontWeight: '500' },
@@ -278,5 +278,5 @@ const s = {
   medidaEmoji:    { fontSize: '18px' },
   medidaNombre:   { fontSize: '10px', color: '#71717a', textAlign: 'center', lineHeight: 1.2 },
   medidaGramos:   { fontSize: '10px', color: '#a1a1aa' },
-  guardarBtn:     { padding: '7px 16px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, #22c55e, #16a34a)', color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: '500', alignSelf: 'flex-end' },
+  guardarBtn:     { padding: '7px 16px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, var(--color-primario-light), var(--color-primario))', color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: '500', alignSelf: 'flex-end' },
 }
