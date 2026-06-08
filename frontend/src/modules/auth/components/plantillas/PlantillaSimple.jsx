@@ -1,7 +1,6 @@
-import { DATOS_EJEMPLO as D } from './datosEjemploPDF'
+import { DATOS_EJEMPLO as D } from '../datosEjemploPDF'
 
-export default function PlantillaSimple({ color, colorBg, colorBorder, logo, posicionLogo }) {
-  const escala = 0.38
+export default function PlantillaSimple({ color, colorBg, colorBorder, logo, posicionLogo, escala = 0.38 }) {
   const W = 210, H = 297
 
   const getPosLogo = () => {

@@ -1,7 +1,6 @@
-import { DATOS_EJEMPLO as D } from './datosEjemploPDF'
+import { DATOS_EJEMPLO as D } from '../datosEjemploPDF'
 
-export default function PlantillaModerna({ color, colorBg, colorBorder, logo, posicionLogo }) {
-  const escala = 0.38
+export default function PlantillaModerna({ color, colorBg, colorBorder, logo, posicionLogo, escala = 0.38 }) {
   const W = 210, H = 297
 
   const getPosLogo = () => {
@@ -44,10 +43,10 @@ export default function PlantillaModerna({ color, colorBg, colorBorder, logo, po
 
         {/* Tarjetas de resumen */}
         {[
-          { label: 'Objetivo', val: `${D.plan.vct_objetivo} kcal`, x: 15 },
-          { label: 'Proteína', val: `${D.macros.proteina.g}g`, x: 65 },
-          { label: 'Carbohidratos', val: `${D.macros.carbohidratos.g}g`, x: 115 },
-          { label: 'Grasa', val: `${D.macros.grasa.g}g`, x: 165 },
+          { label: 'Objetivo', val: `${D.plan.vct_objetivo} kcal`, x: 12 },
+          { label: 'Proteína', val: `${D.macros.proteina.g}g`, x: 60 },
+          { label: 'Carbohidratos', val: `${D.macros.carbohidratos.g}g`, x: 109 },
+          { label: 'Grasa', val: `${D.macros.grasa.g}g`, x: 157 },
         ].map(({ label, val, x }) => (
           <g key={label}>
             <rect x={x} y="66" width="42" height="18" rx="2" fill={colorBg} />

@@ -41,6 +41,66 @@ export const PLANTILLAS = [
     },
     fuente: 'helvetica',
   },
+  {
+    id: 'esquinas',
+    nombre: 'Esquinas',
+    descripcion: 'Estilo moderno con acentos en morado',
+    colores: {
+      primario:    [124, 58, 237],
+      secundario:  [245, 243, 255],
+      texto:       [15, 10, 30],
+      gris:        [109, 99, 125],
+    },
+    fuente: 'helvetica',
+  },
+  {
+    id: 'olaOscuro',
+    nombre: 'OlaOscuro',
+    descripcion: 'Tonos cálidos en naranja y ámbar',
+    colores: {
+      primario:    [234, 88, 12],
+      secundario:  [255, 247, 237],
+      texto:       [28, 18, 8],
+      gris:        [120, 100, 80],
+    },
+    fuente: 'helvetica',
+  },
+  {
+    id: 'zigzag',
+    nombre: 'Zigzag',
+    descripcion: 'Azules profundos estilo marino',
+    colores: {
+      primario:    [6, 182, 212],
+      secundario:  [236, 254, 255],
+      texto:       [8, 51, 68],
+      gris:        [71, 130, 148],
+    },
+    fuente: 'helvetica',
+  },
+  {
+    id: 'terra',
+    nombre: 'Terra',
+    descripcion: 'Tonos tierra y naturales',
+    colores: {
+      primario:    [120, 72, 40],
+      secundario:  [253, 246, 236],
+      texto:       [40, 24, 12],
+      gris:        [130, 100, 80],
+    },
+    fuente: 'helvetica',
+  },
+  {
+    id: 'rosa',
+    nombre: 'Rosa',
+    descripcion: 'Estilo fresco con tonos rosados',
+    colores: {
+      primario:    [219, 39, 119],
+      secundario:  [253, 242, 248],
+      texto:       [40, 10, 25],
+      gris:        [130, 90, 110],
+    },
+    fuente: 'helvetica',
+  },
 ]
 
 export const PLANTILLA_DEFAULT = 'moderna'
