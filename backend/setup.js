@@ -76,7 +76,9 @@ db.exec(`
     activo          INTEGER DEFAULT 1,
     fecha_creacion  TEXT DEFAULT (datetime('now')),
     plantilla_id    TEXT DEFAULT 'moderna',
-    logo_base64     TEXT
+    logo_base64     TEXT,
+    color_pdf       TEXT DEFAULT 'verde',
+    posicion_logo   TEXT DEFAULT 'superior_derecha'
   )
 `)
 console.log('✓ Tabla usuarios lista')
