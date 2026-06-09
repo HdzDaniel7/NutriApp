@@ -1,6 +1,7 @@
-import { DATOS_EJEMPLO as D } from '../datosEjemploPDF'
+import { DATOS_EJEMPLO } from '../datosEjemploPDF'
 
-export default function PlantillaEsquinas({ color, colorBg, colorBorder, logo, posicionLogo, escala = 0.38 }) {
+export default function PlantillaEsquinas({color, colorBg, colorBorder, logo, posicionLogo, escala = 0.38, datos = null,}) {
+  const D = datos || DATOS_EJEMPLO
   const W = 210, H = 297
 
   const getPosLogo = () => {

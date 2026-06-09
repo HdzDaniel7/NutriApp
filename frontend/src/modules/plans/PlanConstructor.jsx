@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { crearPlanVacio, agregarAlimento, eliminarAlimento, actualizarGramos, agregarTiempo, eliminarTiempo, renombrarTiempo, calcularTotales, activarModoPorDia, activarModoSemanalUnico, agregarDia, eliminarDia, renombrarDia, agregarAlimentoDia, eliminarAlimentoDia, actualizarGramosDia, agregarTiempoDia, eliminarTiempoDia, renombrarTiempoDia, calcularTotalesDia } from './planUtils'
 import { TIEMPOS_SUGERIDOS } from '../../config/porciones.config'
 import TiempoComida from './TiempoComida'
 import BuscadorAlimento from './BuscadorAlimento'
 import { plansAPI, patientsAPI } from '../../services/api'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { exportarPlanPDF } from './exportarPDF'
+import { useExportarPDF, PlantillaOffscreen } from './components/ExportadorPDF'
 
 export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null, pacienteIdInicial = null, pacienteNombreInicial = null }) {
   const [ultimoAgregadoId, setUltimoAgregadoId] = useState(null)
@@ -34,6 +34,7 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
   const [pacienteIdPlan, setPacienteIdPlan] = useState(pacienteIdInicial || '')
   const [pacienteNombrePlan, setPacienteNombrePlan] = useState(pacienteNombreInicial || '')
   const [nombrePlan, setNombrePlan] = useState(planInicial?.nombre || 'Plan nutricional')
+  const { ref, config, paginaActual, exportar, capturar } = useExportarPDF()
 
   useEffect(() => {
     if (!plan) return
@@ -198,14 +199,18 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
           <button style={s.guardarPlanBtn} onClick={() => setGuardandoPlan(true)}>
             💾 Guardar plan
           </button>
-          <button style={{...s.guardarPlanBtn, background:'#fef2f2', color:'#dc2626'}}
+          <button
+            style={{ ...s.guardarPlanBtn, background: '#fef2f2', color: '#dc2626' }}
             onClick={() => {
               const u = JSON.parse(sessionStorage.getItem('nutriapp_usuario') || '{}')
-              exportarPlanPDF({
-                plan: { ...plan, nombre: nombrePlan, vct_objetivo: plan.vct_objetivo },
+              console.log('Usuario al exportar:', u)
+              console.log('plantilla_id:', u.plantilla_id)
+              exportar({
+                plan,
+                nombrePlan,
                 plantillaId:  u.plantilla_id  || 'moderna',
-                logoBase64:   u.logo_base64   || null,
                 colorId:      u.color_pdf     || 'verde',
+                logoBase64:   u.logo_base64   || null,
                 posicionLogo: u.posicion_logo || 'superior_derecha',
               })
             }}>
@@ -514,7 +519,12 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
             onCerrar={() => { setBuscadorAbierto(false); setTiempoActivo(null) }}
           />
         )}
-
+    <PlantillaOffscreen
+      containerRef={ref}
+      config={config}
+      paginaActual={paginaActual}
+      onListo={capturar}
+    />
     </div>
   )
 }

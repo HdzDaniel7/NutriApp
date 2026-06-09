@@ -8,7 +8,7 @@ export const PLANTILLAS = [
   {
     id: 'moderna',
     nombre: 'Moderna',
-    descripcion: 'Diseño limpio con acentos verdes y gradientes',
+    descripcion: 'Diseño limpio con  gradientes',
     colores: {
       primario:    [22, 163, 74],
       secundario:  [240, 253, 244],
@@ -78,8 +78,8 @@ export const PLANTILLAS = [
     fuente: 'helvetica',
   },
   {
-    id: 'terra',
-    nombre: 'Terra',
+    id: 'ticket',
+    nombre: 'Ticket',
     descripcion: 'Tonos tierra y naturales',
     colores: {
       primario:    [120, 72, 40],
@@ -90,8 +90,8 @@ export const PLANTILLAS = [
     fuente: 'helvetica',
   },
   {
-    id: 'rosa',
-    nombre: 'Rosa',
+    id: 'pastel',
+    nombre: 'Pastel',
     descripcion: 'Estilo fresco con tonos rosados',
     colores: {
       primario:    [219, 39, 119],
@@ -101,6 +101,55 @@ export const PLANTILLAS = [
     },
     fuente: 'helvetica',
   },
+  {
+    id: 'franjas',
+    nombre: 'Franjas',
+    descripcion: 'Azules profundos estilo marino',
+    colores: {
+      primario:    [200, 170, 200],
+      secundario:  [236, 254, 255],
+      texto:       [8, 51, 68],
+      gris:        [71, 130, 148],
+    },
+    fuente: 'helvetica',
+  },
+  {
+    id: 'lateral',
+    nombre: 'Lateral',
+    descripcion: 'Tonos tierra y naturales',
+    colores: {
+      primario:    [1, 0, 200],
+      secundario:  [253, 246, 236],
+      texto:       [40, 24, 12],
+      gris:        [130, 100, 80],
+    },
+    fuente: 'helvetica',
+  },
+  {
+    id: 'bloques',
+    nombre: 'Bloques',
+    descripcion: 'Estilo fresco con tonos rosados',
+    colores: {
+      primario:    [200, 50, 10],
+      secundario:  [253, 242, 248],
+      texto:       [40, 10, 25],
+      gris:        [130, 90, 110],
+    },
+    fuente: 'helvetica',
+  },
+  {
+    id: 'sello',
+    nombre: 'Sello',
+    descripcion: 'Azules profundos estilo marino',
+    colores: {
+      primario:    [77, 77, 77],
+      secundario:  [236, 254, 255],
+      texto:       [8, 51, 68],
+      gris:        [71, 130, 148],
+    },
+    fuente: 'helvetica',
+  },
+  
 ]
 
 export const PLANTILLA_DEFAULT = 'moderna'

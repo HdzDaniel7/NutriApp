@@ -4,6 +4,12 @@ import PlantillaSimple from "./plantillas/PlantillaSimple";
 import PlantillaEsquinas from "./plantillas/PlantillaEsquinas";
 import PlantillaOlaOscuro from "./plantillas/PlantillaOlaOscuro";
 import PlantillaZigzag from "./plantillas/PlantillaZigzag";
+import PlantillaTicket from "./plantillas/PlantillaTicket";
+import PlantillaPastel from "./plantillas/PlantillaPastel";
+import PlantillaFranja from "./plantillas/PlantillaFranja";
+import PlantillaLateral from "./plantillas/PlantillaLateral";
+import PlantillaBloques from "./plantillas/PlantillaBloques";
+import PlantillaSello from "./plantillas/PlantillaSello";
 
 const COMPONENTES = {
   moderna:     PlantillaModerna,
@@ -11,12 +17,18 @@ const COMPONENTES = {
   minimalista: PlantillaSimple,
   esquinas:    PlantillaEsquinas,
   olaOscuro:   PlantillaOlaOscuro,
-  zigzag:      PlantillaZigzag
+  zigzag:      PlantillaZigzag,
+  ticket:      PlantillaTicket,
+  pastel:      PlantillaPastel,
+  franja:      PlantillaFranja,
+  lateral:     PlantillaLateral,
+  bloques:     PlantillaBloques,
+  sello:       PlantillaSello
 }
 
 export default function PreviewPDF({ plantillaId, color, colorBg, colorBorder, logo, posicionLogo }) {
   const Componente = COMPONENTES[plantillaId] || PlantillaModerna
-  const escala = 2  // ajusta este valor a tu gusto
+  const escala = 2.29  // ajusta este valor a tu gusto
 
   return (
     <div style={s.wrap}>

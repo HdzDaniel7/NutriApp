@@ -1,6 +1,7 @@
-import { DATOS_EJEMPLO as D } from '../datosEjemploPDF'
+import { DATOS_EJEMPLO } from '../datosEjemploPDF'
 
-export default function PlantillaOlaOscuro({ color, colorBg, colorBorder, logo, posicionLogo, escala = 0.38 }) {
+export default function PlantillaOlaOscuro({color, colorBg, colorBorder, logo, posicionLogo, escala = 0.38, datos = null,}) {
+  const D = datos || DATOS_EJEMPLO
   const W = 210, H = 297
 
   const getPosLogo = () => {
@@ -16,8 +17,8 @@ export default function PlantillaOlaOscuro({ color, colorBg, colorBorder, logo, 
 
   // Derivar versión oscura del color principal para el header
   // Se usa el color tal cual para acentos, y un fondo oscuro fijo para el header
-  const headerBg = '#3e3d3f'   // casi negro violeta
-  const headerMid = '#4c4a4e'  // violeta oscuro medio
+  const headerBg = '#202020'   // casi negro violeta
+  const headerMid = '#242424'  // violeta oscuro medio
 
   return (
     <div style={{ width: W * escala, height: H * escala, overflow: 'hidden', borderRadius: 4, border: '1px solid #e4e4e7', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', background: '#fff' }}>
