@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { agendaAPI, patientsAPI } from '../../services/api'
+import { Settings, Calendar, UtensilsCrossed, Pencil, X } from 'lucide-react'
 
 const DIAS_SEMANA = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
@@ -114,7 +115,7 @@ export default function Agenda() {
       <div style={s.topBar}>
         <h1 style={s.h1}>Agenda</h1>
         <div style={s.topAcciones}>
-          <button style={s.btnSecundario} onClick={() => setModalConfig(true)}>⚙️ Configurar horario</button>
+          <button style={s.btnSecundario} onClick={() => setModalConfig(true)}><Settings size={14} style={{verticalAlign:"middle",marginRight:5}}/>Configurar horario</button>
           <button style={s.btnPrimario} onClick={() => { setCitaEditando(null); setModalCita(true) }}>+ Nueva cita</button>
         </div>
       </div>
@@ -122,8 +123,8 @@ export default function Agenda() {
       {/* Tabs */}
       <div style={s.tabs}>
         {[
-          { id: 'calendario', label: '📅 Calendario' },
-          { id: 'buscar',     label: '🔍 Buscar citas' },
+          { id: 'calendario', label: 'Calendario' },
+          { id: 'buscar',     label: 'Buscar citas' },
         ].map(t => (
           <button key={t.id}
             style={tabActiva === t.id ? {...s.tab, ...s.tabActive} : s.tab}
@@ -204,7 +205,7 @@ export default function Agenda() {
           <div style={s.horariosPanel}>
             {!diaSeleccionado ? (
               <div style={s.sinDia}>
-                <div style={s.sinDiaIcon}>📅</div>
+                <div style={s.sinDiaIcon}><Calendar size={32} color="#d6d3d1" strokeWidth={1.2}/></div>
                 <div>Selecciona un día para ver los horarios</div>
               </div>
             ) : (
@@ -233,7 +234,7 @@ export default function Agenda() {
                       }}>
                       <div style={s.slotHora}>{horaStr} – {horaFinStr}</div>
                       {esDescanso ? (
-                        <div style={s.slotDescLabel}>🍽 Descanso</div>
+                        <div style={s.slotDescLabel}><UtensilsCrossed size={11} style={{verticalAlign:"middle",marginRight:3}}/> Descanso</div>
                       ) : citaEnSlot ? (
                         <div style={s.citaInfo}>
                           <div style={s.citaPaciente}>
@@ -251,7 +252,7 @@ export default function Agenda() {
                             </span>
                             <button style={s.editCitaBtn}
                               onClick={() => { setCitaEditando(citaEnSlot); setModalCita(true) }}>
-                              ✏️
+                              <Pencil size={13}/>
                             </button>
                             <button style={s.deleteCitaBtn}
                               onClick={() => {
@@ -260,7 +261,7 @@ export default function Agenda() {
                                     .then(() => cargarCitas())
                                 }
                               }}>
-                              ✕
+                              <X size={13}/>
                             </button>
                           </div>
                         </div>
@@ -388,7 +389,7 @@ const [form, setForm] = useState({
       <div style={m.modal} onClick={e => e.stopPropagation()}>
         <div style={m.header}>
           <span style={m.titulo}>{cita?.id ? 'Editar cita' : 'Nueva cita'}</span>
-          <button style={m.cerrarBtn} onClick={onCerrar}>✕</button>
+          <button style={m.cerrarBtn} onClick={onCerrar}><X size={16}/></button>
         </div>
         <div style={m.body}>
           <div style={m.field}>
@@ -501,7 +502,7 @@ function FormConfig({ config, onGuardar, onCerrar }) {
       <div style={m.modal} onClick={e => e.stopPropagation()}>
         <div style={m.header}>
           <span style={m.titulo}>Configurar horario</span>
-          <button style={m.cerrarBtn} onClick={onCerrar}>✕</button>
+          <button style={m.cerrarBtn} onClick={onCerrar}><X size={16}/></button>
         </div>
         <div style={m.body}>
           <div style={m.grid2}>

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, NavLink, useLocation, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import Calculadora from './modules/calculator/Calculadora'
 import Alimentos from './modules/foods/Alimentos'
 import PlanConstructor from './modules/plans/PlanConstructor'
@@ -218,13 +219,13 @@ function Layout() {
         </div>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 28px' }}>
           <Routes>
-            <Route path="/"            element={<Dashboard />} />
-            <Route path="/calculadora" element={<Calculadora />} />
-            <Route path="/alimentos"   element={<Alimentos />} />
-            <Route path="/plan"        element={<PlanWrapper />} />
-            <Route path="/pacientes"   element={<Pacientes />} />
-            <Route path="/agenda"      element={<Agenda />} />
-            <Route path="/perfil"      element={<Perfil />} />
+            <Route path="/"            element={<ErrorBoundary><Dashboard /></ErrorBoundary>} />
+            <Route path="/calculadora" element={<ErrorBoundary><Calculadora /></ErrorBoundary>} />
+            <Route path="/alimentos"   element={<ErrorBoundary><Alimentos /></ErrorBoundary>} />
+            <Route path="/plan"        element={<ErrorBoundary><PlanWrapper /></ErrorBoundary>} />
+            <Route path="/pacientes"   element={<ErrorBoundary><Pacientes /></ErrorBoundary>} />
+            <Route path="/agenda"      element={<ErrorBoundary><Agenda /></ErrorBoundary>} />
+            <Route path="/perfil"      element={<ErrorBoundary><Perfil /></ErrorBoundary>} />
           </Routes>
         </div>
       </main>

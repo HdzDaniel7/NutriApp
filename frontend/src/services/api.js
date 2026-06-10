@@ -8,13 +8,21 @@ const api = axios.create({
 })
 
 // ─────────────────────────────────────────────
-// Interceptor global de errores
-// Centraliza el manejo de errores de red
+// Auto-logout cuando el token expira (401)
 // ─────────────────────────────────────────────
+let _logoutHandler = null
+export const setLogoutHandler = (fn) => { _logoutHandler = fn }
+
+const AUTH_ENDPOINTS = ['/auth/login', '/auth/register', '/auth/me']
+
 api.interceptors.response.use(
   response => response,
   error => {
-    console.error('API Error:', error.response?.data || error.message)
+    const url = error.config?.url || ''
+    const esEndpointAuth = AUTH_ENDPOINTS.some(e => url.includes(e))
+    if (error.response?.status === 401 && !esEndpointAuth && _logoutHandler) {
+      _logoutHandler()
+    }
     return Promise.reject(error)
   }
 )
@@ -36,18 +44,18 @@ export const calculatorAPI = {
 }
 
 // ─────────────────────────────────────────────
-// PACIENTES — fase 2
+// PACIENTES
 // ─────────────────────────────────────────────
 export const patientsAPI = {
-  list:     ()           => api.get('/patients'),
-  create:   (data)       => api.post('/patients', data),
-  getById:  (id)         => api.get(`/patients/${id}`),
-  update:   (id, data)   => api.put(`/patients/${id}`, data),
-  delete:   (id)         => api.delete(`/patients/${id}`),
+  list:     (params)      => api.get('/patients', { params }),
+  create:   (data)        => api.post('/patients', data),
+  getById:  (id)          => api.get(`/patients/${id}`),
+  update:   (id, data)    => api.put(`/patients/${id}`, data),
+  delete:   (id)          => api.delete(`/patients/${id}`),
 }
 
 // ─────────────────────────────────────────────
-// CONSULTAS — fase 2
+// CONSULTAS
 // ─────────────────────────────────────────────
 export const consultasAPI = {
   list:   (patientId)        => api.get(`/patients/${patientId}/consultas`),
@@ -55,7 +63,7 @@ export const consultasAPI = {
 }
 
 // ─────────────────────────────────────────────
-// PLANES — fase 2
+// PLANES
 // ─────────────────────────────────────────────
 export const plansAPI = {
   save:         (patientId, plan) => api.post(`/patients/${patientId}/planes`, plan),
@@ -68,7 +76,7 @@ export const plansAPI = {
 }
 
 // ─────────────────────────────────────────────
-// AGENDA — fase 4
+// AGENDA
 // ─────────────────────────────────────────────
 export const agendaAPI = {
   getConfig:    ()               => api.get('/agenda/config'),

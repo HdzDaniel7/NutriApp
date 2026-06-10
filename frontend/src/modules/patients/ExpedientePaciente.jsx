@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { patientsAPI, consultasAPI, plansAPI } from '../../services/api'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import GraficaEvolucion from './GraficaEvolucion'
 import { exportarPlanPDF } from '../plans/exportarPDF'
+import { Mail, Phone, Scale, Ruler, Flame, Check, X, Pencil, FileDown } from 'lucide-react'
 
 export default function ExpedientePaciente({ pacienteId, onVolver }) {
   const [paciente, setPaciente] = useState(null)
@@ -12,6 +14,7 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
   const [planViendoId, setPlanViendoId] = useState(null)
   const [renombrandoPlanId, setRenombrandoPlanId] = useState(null)
   const [nuevoPlanNombre, setNuevoPlanNombre] = useState('')
+  const { usuario } = useAuth()
   const navigate = useNavigate()
 
   const cargar = () => {
@@ -51,8 +54,8 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
               {calcularEdad(paciente.fecha_nacimiento) && (
                 <span style={s.badge}>{calcularEdad(paciente.fecha_nacimiento)} años</span>
               )}
-              {paciente.email && <span style={s.badge}>✉ {paciente.email}</span>}
-              {paciente.telefono && <span style={s.badge}>📞 {paciente.telefono}</span>}
+              {paciente.email && <span style={s.badge}><Mail size={10} style={{marginRight:3,verticalAlign:'middle'}}/>{paciente.email}</span>}
+              {paciente.telefono && <span style={s.badge}><Phone size={10} style={{marginRight:3,verticalAlign:'middle'}}/>{paciente.telefono}</span>}
             </div>
           </div>
         </div>
@@ -139,10 +142,10 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
                   {new Date(c.fecha).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </div>
                 <div style={s.consultaMedidas}>
-                  {c.peso    && <span style={s.medidaBadge}>⚖ {c.peso} kg</span>}
-                  {c.talla   && <span style={s.medidaBadge}>📏 {c.talla} cm</span>}
+                  {c.peso    && <span style={s.medidaBadge}><Scale size={10} style={{marginRight:3,verticalAlign:'middle'}}/>{c.peso} kg</span>}
+                  {c.talla   && <span style={s.medidaBadge}><Ruler size={10} style={{marginRight:3,verticalAlign:'middle'}}/>{c.talla} cm</span>}
                   {c.imc     && <span style={s.medidaBadge}>IMC {c.imc}</span>}
-                  {c.pct_grasa && <span style={s.medidaBadge}>🔥 {c.pct_grasa}% grasa</span>}
+                  {c.pct_grasa && <span style={s.medidaBadge}><Flame size={10} style={{marginRight:3,verticalAlign:'middle'}}/>{c.pct_grasa}% grasa</span>}
                   {c.cintura && <span style={s.medidaBadge}>Cintura {c.cintura} cm</span>}
                   {c.cadera  && <span style={s.medidaBadge}>Cadera {c.cadera} cm</span>}
                 </div>
@@ -192,15 +195,15 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
                         plansAPI.renombrar(p.id, nuevoPlanNombre)
                             .then(() => { setRenombrandoPlanId(null); cargar() })
                             .catch(err => console.error(err))
-                        }}>✓</button>
+                        }}><Check size={13}/></button>
                         <button style={{...s.verPlanBtn, background:'#fef2f2', color:'#ef4444'}}
-                        onClick={() => setRenombrandoPlanId(null)}>✕</button>
+                        onClick={() => setRenombrandoPlanId(null)}><X size={13}/></button>
                     </div>
                     ) : (
                     <div style={s.planNombre}
                       onClick={() => { setRenombrandoPlanId(p.id); setNuevoPlanNombre(p.nombre) }}
                       title="Clic para renombrar">
-                      {p.nombre} ✏️
+                      {p.nombre} <Pencil size={11} style={{verticalAlign:'middle', opacity:0.4}}/>
                     </div>
                     )}
                     <div style={s.planMeta}>
@@ -261,6 +264,7 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
           <ModalVerPlan
             planId={planViendoId}
             paciente={paciente}
+            usuario={usuario}
             onCerrar={() => setPlanViendoId(null)}
           />
         )}
@@ -282,20 +286,16 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
-  // Calcular IMC automáticamente
-  useEffect(() => {
+  const imcCalculado = (() => {
     const p = parseFloat(form.peso)
     const t = parseFloat(form.talla)
-    if (p && t) {
-      const imc = (p / Math.pow(t / 100, 2)).toFixed(1)
-      setForm(f => ({ ...f, imc }))
-    }
-  }, [form.peso, form.talla])
+    return (p && t) ? (p / Math.pow(t / 100, 2)).toFixed(1) : ''
+  })()
 
   const handleGuardar = () => {
     if (!form.fecha) { setError('La fecha es requerida'); return }
     setGuardando(true)
-    consultasAPI.create(pacienteId, form)
+    consultasAPI.create(pacienteId, { ...form, imc: imcCalculado || form.imc })
       .then(() => onGuardar())
       .catch(err => setError(err.response?.data?.error || 'Error al guardar'))
       .finally(() => setGuardando(false))
@@ -306,7 +306,7 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
       <div style={s.modal} onClick={e => e.stopPropagation()}>
         <div style={s.modalHeader}>
           <span style={s.modalTitulo}>Nueva consulta</span>
-          <button style={s.cerrarBtn} onClick={onCerrar}>✕</button>
+          <button style={s.cerrarBtn} onClick={onCerrar}><X size={16}/></button>
         </div>
         <div style={s.modalBody}>
           <div style={s.field}>
@@ -326,8 +326,8 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
               <div key={key} style={s.field}>
                 <label style={s.label}>{label}</label>
                 <input style={s.input} type="number" placeholder={placeholder}
-                  value={form[key]}
-                  onChange={e => set(key, e.target.value)}
+                  value={key === 'imc' ? imcCalculado : form[key]}
+                  onChange={e => key !== 'imc' && set(key, e.target.value)}
                   readOnly={key === 'imc'} />
               </div>
             ))}
@@ -350,7 +350,7 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
   )
 }
 
-function ModalVerPlan({ planId, paciente, onCerrar }) {
+function ModalVerPlan({ planId, paciente, usuario, onCerrar }) {
   const [plan, setPlan] = useState(null)
   const [cargando, setCargando] = useState(true)
 
@@ -366,7 +366,7 @@ function ModalVerPlan({ planId, paciente, onCerrar }) {
       <div style={{...s.modal, maxWidth: '700px'}} onClick={e => e.stopPropagation()}>
         <div style={s.modalHeader}>
           <span style={s.modalTitulo}>{plan?.nombre || 'Plan nutricional'}</span>
-          <button style={s.cerrarBtn} onClick={onCerrar}>✕</button>
+          <button style={s.cerrarBtn} onClick={onCerrar}><X size={16}/></button>
         </div>
         <div style={s.modalBody}>
           {cargando ? (
@@ -419,19 +419,16 @@ function ModalVerPlan({ planId, paciente, onCerrar }) {
           )}
         </div>
         <div style={s.modalFooter}>
-          <button style={{...s.cancelarBtn}}
-            onClick={() => {
-              const u = JSON.parse(sessionStorage.getItem('nutriapp_usuario') || '{}')
-              exportarPlanPDF({
-                plan,
-                paciente,
-                plantillaId:  u.plantilla_id  || 'moderna',
-                logoBase64:   u.logo_base64   || null,
-                colorId:      u.color_pdf     || 'verde',
-                posicionLogo: u.posicion_logo || 'superior_derecha',
-              })
-            }}>
-            📄 Exportar PDF
+          <button style={{...s.cancelarBtn, display:'flex', alignItems:'center', gap:'6px'}}
+            onClick={() => exportarPlanPDF({
+              plan,
+              paciente,
+              plantillaId:  usuario?.plantilla_id  || 'moderna',
+              logoBase64:   usuario?.logo_base64   || null,
+              colorId:      usuario?.color_pdf     || 'verde',
+              posicionLogo: usuario?.posicion_logo || 'superior_derecha',
+            })}>
+            <FileDown size={14}/> Exportar PDF
           </button>
           <button style={s.guardarBtn} onClick={onCerrar}>Cerrar</button>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Trash2, Pencil, X } from 'lucide-react'
 import { MEDIDAS_CASERAS, getMedidaPorGramos, getGramosPorMedida, calcularNutrientesPorPorcion } from '../../config/porciones.config'
 import { calcularTotalesTiempo } from './planUtils'
 
@@ -50,9 +51,7 @@ export default function TiempoComida({ tiempo, ultimoAgregadoId, onAgregarAlimen
           <button style={s.addBtn} onClick={() => onAgregarAlimento(tiempo.id)}>
             + Agregar
           </button>
-          <button style={s.deleteBtn} onClick={() => onEliminar(tiempo.id)} title="Eliminar tiempo">
-            🗑
-          </button>
+          <button style={s.deleteBtn} onClick={() => onEliminar(tiempo.id)} title="Eliminar tiempo"><Trash2 size={13}/></button>
         </div>
       </div>
 
@@ -175,8 +174,8 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
         </div>
       </div>
       <div style={s.alimentoAcciones}>
-        <button style={s.editBtn} onClick={onEditar}>✏️</button>
-        <button style={s.elimBtn} onClick={onEliminar}>✕</button>
+        <button style={s.editBtn} onClick={onEditar}><Pencil size={12}/></button>
+        <button style={s.elimBtn} onClick={onEliminar}><X size={12}/></button>
       </div>
     </div>
 

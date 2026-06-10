@@ -1,52 +1,7 @@
 require('dotenv').config()
-const express = require('express')
-const cors = require('cors')
-const path = require('path')
-const app = express()
+const app  = require('./app')
 
 const PORT = process.env.PORT || 3001
-
-app.use(cors())
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ limit: '10mb', extended: true }))
-
-// Rutas
-const foodsRouter      = require('./routes/foods')
-const calculatorRouter = require('./routes/calculator')
-const patientsRouter   = require('./routes/patients')
-const plansRouter      = require('./routes/plans')
-const authRouter       = require('./routes/auth')
-const agendaRouter     = require('./routes/agenda')
-
-// Rutas públicas
-app.use('/api/auth', authRouter)
-app.use('/api/foods', foodsRouter)
-
-// Rutas protegidas
-const autenticar = require('./middleware/auth')
-app.use('/api/calculator', autenticar, calculatorRouter)
-app.use('/api/patients',   autenticar, patientsRouter)
-app.use('/api/plans',      autenticar, plansRouter)
-app.use('/api/agenda',     autenticar, agendaRouter)
-
-// Ruta de prueba
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'NutriApp backend funcionando' })
-})
-
-// ─────────────────────────────────────────────
-// Middleware global de errores
-// Captura cualquier error no manejado en las rutas
-// ─────────────────────────────────────────────
-app.use((err, req, res, next) => {
-  console.error(`[${new Date().toISOString()}] Error:`, err.message)
-  res.status(err.status || 500).json({
-    error: err.message || 'Error interno del servidor',
-    timestamp: new Date().toISOString(),
-  })
-})
-
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`)
 })
-

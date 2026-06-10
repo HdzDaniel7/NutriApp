@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FACTORES_ACTIVIDAD, PRESETS_MACROS } from '../../config/formulas.config'
+import { FACTORES_ACTIVIDAD, PRESETS_MACROS, calcularTMB, calcularIMC } from '../../config/formulas.config'
 
 const FORMULAS = [
   { id: 'mifflin', nombre: 'Mifflin-St Jeor', descripcion: 'Recomendada para población general' },
@@ -14,32 +14,6 @@ const OBJETIVOS = [
   { valor: 250,  label: 'Ganancia leve',  desc: '+250 kcal/día' },
   { valor: 500,  label: 'Ganancia',       desc: '+500 kcal/día' },
 ]
-
-function calcularTMB({ sexo, edad, peso, talla, pctGrasa, formula }) {
-  const e = parseFloat(edad), p = parseFloat(peso), t = parseFloat(talla)
-  if (!e || !p || !t) return null
-  if (formula === 'mifflin') return sexo === 'M' ? 10*p + 6.25*t - 5*e + 5 : 10*p + 6.25*t - 5*e - 161
-  if (formula === 'harris')  return sexo === 'M' ? 88.362 + 13.397*p + 4.799*t - 5.677*e : 447.593 + 9.247*p + 3.098*t - 4.330*e
-  if (formula === 'katch') {
-    const g = parseFloat(pctGrasa)
-    if (!g) return null
-    return 370 + 21.6 * (p * (1 - g / 100))
-  }
-  return null
-}
-
-function calcularIMC(peso, talla) {
-  const p = parseFloat(peso), t = parseFloat(talla)
-  if (!p || !t) return null
-  const imc = p / Math.pow(t / 100, 2)
-  let cat
-  if (imc < 18.5)    cat = 'Bajo peso'
-  else if (imc < 25) cat = 'Normal'
-  else if (imc < 30) cat = 'Sobrepeso'
-  else if (imc < 35) cat = 'Obesidad I'
-  else               cat = 'Obesidad II+'
-  return { valor: imc.toFixed(1), categoria: cat }
-}
 
 export default function Calculadora() {
   const [form, setForm] = useState({

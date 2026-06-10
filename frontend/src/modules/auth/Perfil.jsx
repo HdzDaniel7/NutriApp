@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { aplicarTema } from '../../utils/theme'
 import api from '../../services/api'
 import { PLANTILLAS, COLORES_PDF, POSICIONES_LOGO } from '../../config/plantillas.config'
 import PreviewPDF from './components/PreviewPDF'
@@ -231,7 +232,7 @@ export default function Perfil() {
                       onClick={() => {
                         set('color_pdf', c.id)
                         /* Preview inmediato sin guardar */
-                        import('../../context/AuthContext').then(m => m.aplicarTema(c.id))
+                        aplicarTema(c.id)
                       }}
                       title={c.nombre}
                       style={{

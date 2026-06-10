@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { patientsAPI } from '../../services/api'
 import FormPaciente from './FormPaciente'
 import ExpedientePaciente from './ExpedientePaciente'
+import { Mail, Phone, Users } from 'lucide-react'
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([])
@@ -83,7 +84,7 @@ export default function Pacientes() {
         <div style={s.msg}>Cargando pacientes...</div>
       ) : pacientes.length === 0 ? (
         <div style={s.emptyState}>
-          <div style={s.emptyIcon}>👤</div>
+          <div style={s.emptyIcon}><Users size={48} strokeWidth={1.2} color="#d6d3d1"/></div>
           <div style={s.emptyTitulo}>
             {busqueda ? 'No se encontraron pacientes' : 'Aún no hay pacientes registrados'}
           </div>
@@ -112,8 +113,8 @@ export default function Pacientes() {
 
               {(p.email || p.telefono) && (
                 <div style={s.pacienteContacto}>
-                  {p.email && <div style={s.contactoItem}>✉ {p.email}</div>}
-                  {p.telefono && <div style={s.contactoItem}>📞 {p.telefono}</div>}
+                  {p.email && <div style={s.contactoItem}><Mail size={11} style={{marginRight:3,verticalAlign:"middle"}}/>{p.email}</div>}
+                  {p.telefono && <div style={s.contactoItem}><Phone size={11} style={{marginRight:3,verticalAlign:"middle"}}/>{p.telefono}</div>}
                 </div>
               )}
 
