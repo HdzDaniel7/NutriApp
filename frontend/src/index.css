@@ -1,12 +1,205 @@
+/* ─────────────────────────────────────────────
+   NutriDesk — Global Styles
+   Concepto A · Claro Geométrico · Naturaleza de día
+   ───────────────────────────────────────────── */
+
 :root {
-  --color-primario: #16a34a;
-  --color-primario-dark: #15803d;
-  --color-primario-light: #22c55e;
-  --color-primario-bg: #f0fdf4;
-  --color-primario-border: #86efac;
-  --color-primario-text: #15803d;
+  /* Paleta principal */
+  --color-primario:        #3A7D52;
+  --color-primario-dark:   #2A5E3C;
+  --color-primario-light:  #5A9E6F;
+  --color-primario-bg:     #EBF4ED;
+  --color-primario-border: #C8E0CC;
+  --color-primario-text:   #2A5E3C;
+  --color-primario-pale:   #C8E0CC;
+
+  /* Fondo y superficies */
+  --bg-page:               #F4F7F1;
+  --bg-card:               #FFFFFF;
+  --bg-card-hover:         #FAFCF8;
+
+  /* Texto */
+  --txt-primary:           #1E3A2A;
+  --txt-secondary:         #4A6B55;
+  --txt-muted:             #8AA896;
+
+  /* Bordes */
+  --border-default:        #D8E8D2;
+  --border-subtle:         #E8F2E4;
+
+  /* Tierra / acento cálido */
+  --color-earth:           #8B6E52;
+  --color-earth-light:     #C4A882;
+  --color-earth-bg:        #F5EDE4;
+
+  /* Semánticos */
+  --color-danger:          #DC2626;
+  --color-danger-bg:       #FEF2F2;
+  --color-danger-border:   #FECACA;
+  --color-warning:         #D97706;
+  --color-warning-bg:      #FFFBEB;
+  --color-success:         #16a34a;
+  --color-success-bg:      #F0FDF4;
 }
 
-* {
+/* ─── Reset base ─── */
+*, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background-color: var(--bg-page);
+  color: var(--txt-primary);
+  line-height: 1.5;
+}
+
+/* ─── Scrollbar sutil ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-primario-pale); }
+
+/* ─── Tipografía base ─── */
+h1 { font-size: 1.6rem; font-weight: 700; color: var(--txt-primary); letter-spacing: -0.4px; }
+h2 { font-size: 1.25rem; font-weight: 600; color: var(--txt-primary); letter-spacing: -0.3px; }
+h3 { font-size: 1.05rem; font-weight: 600; color: var(--txt-primary); }
+p  { color: var(--txt-secondary); line-height: 1.6; }
+
+/* ─── Utilidades de card ─── */
+.nd-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.nd-card-sm {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+/* ─── Botones base ─── */
+.nd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  text-decoration: none;
+}
+
+.nd-btn-primary {
+  background: var(--color-primario);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(58,125,82,0.25);
+}
+.nd-btn-primary:hover {
+  background: var(--color-primario-dark);
+  box-shadow: 0 3px 12px rgba(58,125,82,0.35);
+  transform: translateY(-1px);
+}
+
+.nd-btn-ghost {
+  background: transparent;
+  color: var(--txt-secondary);
+  border: 1px solid var(--border-default);
+}
+.nd-btn-ghost:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--color-primario-pale);
+  color: var(--color-primario);
+}
+
+/* ─── Inputs base ─── */
+.nd-input {
+  width: 100%;
+  height: 38px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 13.5px;
+  color: var(--txt-primary);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  font-family: inherit;
+}
+.nd-input:focus {
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(58,125,82,0.1);
+}
+.nd-input::placeholder { color: var(--txt-muted); }
+
+select.nd-input { cursor: pointer; }
+
+/* ─── Badge ─── */
+.nd-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 500;
+  background: var(--color-primario-bg);
+  color: var(--color-primario-text);
+  border: 1px solid var(--color-primario-border);
+}
+
+/* ─── Tabla base ─── */
+.nd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.nd-table th {
+  text-align: left;
+  padding: 9px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--txt-muted);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nd-table td {
+  padding: 10px 14px;
+  color: var(--txt-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nd-table tr:last-child td { border-bottom: none; }
+.nd-table tr:hover td { background: var(--bg-card-hover); }
+
+/* ─── Fade in al montar módulos ─── */
+@keyframes nd-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nd-page {
+  animation: nd-fadein 0.22s ease-out both;
+}
+
+/* ─── Nav hover global ─── */
+a.nav-link-hover:hover {
+  background: var(--color-primario-bg) !important;
+  color: var(--color-primario) !important;
 }
