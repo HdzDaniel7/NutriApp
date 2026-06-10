@@ -1,0 +1,337 @@
+{
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\config\\formulas.config.js": {
+    "mtime": 1780441100.8724034,
+    "ast_hash": "84b1fa209339ec370dd2b158ea196731",
+    "semantic_hash": "84b1fa209339ec370dd2b158ea196731"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\db\\database.js": {
+    "mtime": 1780441100.8734083,
+    "ast_hash": "fef7b521603eda3ba67a7aae93d6b1db",
+    "semantic_hash": "fef7b521603eda3ba67a7aae93d6b1db"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\db\\importar_excel.py": {
+    "mtime": 1780441100.8734083,
+    "ast_hash": "1a27d4525e2242ccd38f45078c352112",
+    "semantic_hash": "1a27d4525e2242ccd38f45078c352112"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\db\\migrar_v2.js": {
+    "mtime": 1780441100.8734083,
+    "ast_hash": "d5a3c7aeb96b4a931a3a0766aeaa5bf2",
+    "semantic_hash": "d5a3c7aeb96b4a931a3a0766aeaa5bf2"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\db\\migrar_v3.js": {
+    "mtime": 1780441100.8734083,
+    "ast_hash": "b26a8f9e1edd37a4e231489a7f713cf5",
+    "semantic_hash": "b26a8f9e1edd37a4e231489a7f713cf5"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\db\\migrar_v4.js": {
+    "mtime": 1780441100.8746743,
+    "ast_hash": "54d72df8b5d1b0dea58e0de5e7d7a519",
+    "semantic_hash": "54d72df8b5d1b0dea58e0de5e7d7a519"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\db\\seed_alimentos.json": {
+    "mtime": 1780549224.6853015,
+    "ast_hash": "d0feee5feef2bf1144a2529245d45e95",
+    "semantic_hash": "d0feee5feef2bf1144a2529245d45e95"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\index.js": {
+    "mtime": 1780801212.9253943,
+    "ast_hash": "5aa669a0bf6559d20c808a649cd0cc52",
+    "semantic_hash": "5aa669a0bf6559d20c808a649cd0cc52"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\middleware\\auth.js": {
+    "mtime": 1780441100.8746743,
+    "ast_hash": "26df4f045ddb54ed357cb3138902909b",
+    "semantic_hash": "26df4f045ddb54ed357cb3138902909b"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\migrar_v5.js": {
+    "mtime": 1780800530.1394167,
+    "ast_hash": "1f985f9d438190a9d07c0c73cb845c7c",
+    "semantic_hash": "1f985f9d438190a9d07c0c73cb845c7c"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\migrar_v6.js": {
+    "mtime": 1780862749.8793178,
+    "ast_hash": "9eda3ef0710e019d7cc86a0c98895ade",
+    "semantic_hash": "9eda3ef0710e019d7cc86a0c98895ade"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\package.json": {
+    "mtime": 1780713933.0566907,
+    "ast_hash": "500397c7e64a6808959557670d6abdcb",
+    "semantic_hash": "500397c7e64a6808959557670d6abdcb"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\routes\\agenda.js": {
+    "mtime": 1780441100.8756745,
+    "ast_hash": "b4c736f1a8c4b9a9278e58722775f015",
+    "semantic_hash": "b4c736f1a8c4b9a9278e58722775f015"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\routes\\auth.js": {
+    "mtime": 1780863974.1176603,
+    "ast_hash": "9dca4390ced386acb15abd31111b92b9",
+    "semantic_hash": "9dca4390ced386acb15abd31111b92b9"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\routes\\calculator.js": {
+    "mtime": 1780441100.8766806,
+    "ast_hash": "8341a9768f7cfc3ba3572da481a39796",
+    "semantic_hash": "8341a9768f7cfc3ba3572da481a39796"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\routes\\foods.js": {
+    "mtime": 1780441100.8766806,
+    "ast_hash": "81f5b6081c13dda63d760c47c9dc73ce",
+    "semantic_hash": "81f5b6081c13dda63d760c47c9dc73ce"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\routes\\patients.js": {
+    "mtime": 1780441100.8766806,
+    "ast_hash": "d577a32e62343733c8fea326e3225fde",
+    "semantic_hash": "d577a32e62343733c8fea326e3225fde"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\routes\\plans.js": {
+    "mtime": 1780441100.8788953,
+    "ast_hash": "36d6b17d6978577e73b16725371b0f96",
+    "semantic_hash": "36d6b17d6978577e73b16725371b0f96"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\backend\\setup.js": {
+    "mtime": 1780992342.259675,
+    "ast_hash": "3c188ec4138db567a7eab5174b1e7b22",
+    "semantic_hash": "3c188ec4138db567a7eab5174b1e7b22"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\eslint.config.js": {
+    "mtime": 1780441100.8798945,
+    "ast_hash": "fa91453358b56681481f75f81d1bfccd",
+    "semantic_hash": "fa91453358b56681481f75f81d1bfccd"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\package.json": {
+    "mtime": 1780441100.8831527,
+    "ast_hash": "29aa37913d0a306d150adc4338ff91cb",
+    "semantic_hash": "29aa37913d0a306d150adc4338ff91cb"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\App.jsx": {
+    "mtime": 1781063290.113349,
+    "ast_hash": "d3d84f336afb2a160aa53ccbfdc38a45",
+    "semantic_hash": "d3d84f336afb2a160aa53ccbfdc38a45"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\config\\formulas.config.js": {
+    "mtime": 1780441100.8851514,
+    "ast_hash": "f94180d5c1917d2067c11352712e4ecb",
+    "semantic_hash": "f94180d5c1917d2067c11352712e4ecb"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\config\\plantillas.config.js": {
+    "mtime": 1780960912.288714,
+    "ast_hash": "7b44723ac98f9a6d268c879ac2dc0e0d",
+    "semantic_hash": "7b44723ac98f9a6d268c879ac2dc0e0d"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\config\\porciones.config.js": {
+    "mtime": 1780441100.8851514,
+    "ast_hash": "4d92c49ccd57b981b37309569aed0403",
+    "semantic_hash": "4d92c49ccd57b981b37309569aed0403"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\context\\AuthContext.jsx": {
+    "mtime": 1781063273.1592352,
+    "ast_hash": "f5154813ce11bcee5366e3565775b4bf",
+    "semantic_hash": "f5154813ce11bcee5366e3565775b4bf"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\main.jsx": {
+    "mtime": 1780441100.8861516,
+    "ast_hash": "51fd21c378330142b61bf8d1ef3795ef",
+    "semantic_hash": "51fd21c378330142b61bf8d1ef3795ef"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\agenda\\Agenda.jsx": {
+    "mtime": 1780866086.2964084,
+    "ast_hash": "0b5e672232cd1ad8419c6d610f42bef7",
+    "semantic_hash": "0b5e672232cd1ad8419c6d610f42bef7"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\Login.jsx": {
+    "mtime": 1781059696.9473667,
+    "ast_hash": "767f4b513bfc267475d1704056a071de",
+    "semantic_hash": "767f4b513bfc267475d1704056a071de"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\Perfil.jsx": {
+    "mtime": 1781063595.5499034,
+    "ast_hash": "4676d6cd6c7c9762beebde488d43d6fd",
+    "semantic_hash": "4676d6cd6c7c9762beebde488d43d6fd"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\PreviewPDF.jsx": {
+    "mtime": 1780965224.3853545,
+    "ast_hash": "1e8d3f8f14bf5bf4c35da2d811077fc6",
+    "semantic_hash": "1e8d3f8f14bf5bf4c35da2d811077fc6"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\datosEjemploPDF.js": {
+    "mtime": 1780960053.340886,
+    "ast_hash": "5296dd4d9b31bb850ee7806bd597bd9e",
+    "semantic_hash": "5296dd4d9b31bb850ee7806bd597bd9e"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaBloques.jsx": {
+    "mtime": 1780963993.9965806,
+    "ast_hash": "b78f7c96a974fd0c7344541bcccc9571",
+    "semantic_hash": "b78f7c96a974fd0c7344541bcccc9571"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaClinica.jsx": {
+    "mtime": 1780963993.38931,
+    "ast_hash": "d81b9bb2395b4367d5b31af95931d7f2",
+    "semantic_hash": "d81b9bb2395b4367d5b31af95931d7f2"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaEsquinas.jsx": {
+    "mtime": 1780963992.7243333,
+    "ast_hash": "a187b6df3c977ae623ace6523756d635",
+    "semantic_hash": "a187b6df3c977ae623ace6523756d635"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaFranja.jsx": {
+    "mtime": 1780963992.0312927,
+    "ast_hash": "3cb11da0f74d0fc5b18274a45f188a19",
+    "semantic_hash": "3cb11da0f74d0fc5b18274a45f188a19"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaLateral.jsx": {
+    "mtime": 1780963991.3138385,
+    "ast_hash": "420447608f72071f0a5568e388436a20",
+    "semantic_hash": "420447608f72071f0a5568e388436a20"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaModerna.jsx": {
+    "mtime": 1780963990.5973878,
+    "ast_hash": "946c97ff2cff3ee00c4687451c1154c5",
+    "semantic_hash": "946c97ff2cff3ee00c4687451c1154c5"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaOlaOscuro.jsx": {
+    "mtime": 1780963989.767861,
+    "ast_hash": "2a519dfee2239abca8ae5090d4bf7d1c",
+    "semantic_hash": "2a519dfee2239abca8ae5090d4bf7d1c"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaPastel.jsx": {
+    "mtime": 1780963988.8274744,
+    "ast_hash": "f01aed493070011f0ae2739506fd862f",
+    "semantic_hash": "f01aed493070011f0ae2739506fd862f"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaSello.jsx": {
+    "mtime": 1780966733.2691412,
+    "ast_hash": "725c062d65bebe03536d573dd3c68628",
+    "semantic_hash": "725c062d65bebe03536d573dd3c68628"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaSimple.jsx": {
+    "mtime": 1780963986.7257571,
+    "ast_hash": "4e4bd56d2d0ec0f2760a3a74f6367b13",
+    "semantic_hash": "4e4bd56d2d0ec0f2760a3a74f6367b13"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaTicket.jsx": {
+    "mtime": 1780963985.8007803,
+    "ast_hash": "c067f778d175ed94306bedd474fe8eda",
+    "semantic_hash": "c067f778d175ed94306bedd474fe8eda"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\auth\\components\\plantillas\\PlantillaZigzag.jsx": {
+    "mtime": 1780963984.830156,
+    "ast_hash": "7efe294effed766cf7d52f928d742b03",
+    "semantic_hash": "7efe294effed766cf7d52f928d742b03"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\calculator\\Calculadora.jsx": {
+    "mtime": 1780866086.2964084,
+    "ast_hash": "6ef59ff391bb928329ad6d033189aa97",
+    "semantic_hash": "6ef59ff391bb928329ad6d033189aa97"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\dashboard\\Dashboard.jsx": {
+    "mtime": 1781061993.280939,
+    "ast_hash": "2b2c400cedb452709a4b56663d1fdd6f",
+    "semantic_hash": "2b2c400cedb452709a4b56663d1fdd6f"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\foods\\Alimentos.jsx": {
+    "mtime": 1780866086.2964084,
+    "ast_hash": "2354a3ccfa84b2422de2ce9170484356",
+    "semantic_hash": "2354a3ccfa84b2422de2ce9170484356"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\patients\\ExpedientePaciente.jsx": {
+    "mtime": 1780866086.2964084,
+    "ast_hash": "77f932ec2e37a18939041da570bbaca9",
+    "semantic_hash": "77f932ec2e37a18939041da570bbaca9"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\patients\\FormPaciente.jsx": {
+    "mtime": 1780866086.294848,
+    "ast_hash": "20f833eb854e0d0a752125df7436a196",
+    "semantic_hash": "20f833eb854e0d0a752125df7436a196"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\patients\\GraficaEvolucion.jsx": {
+    "mtime": 1780441100.8915944,
+    "ast_hash": "f339e3fe76555703a9265d4d1d6a98da",
+    "semantic_hash": "f339e3fe76555703a9265d4d1d6a98da"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\patients\\Pacientes.jsx": {
+    "mtime": 1780866086.3026817,
+    "ast_hash": "51ed7fbfc72ef20b807589eeeabd759a",
+    "semantic_hash": "51ed7fbfc72ef20b807589eeeabd759a"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\plans\\BuscadorAlimento.jsx": {
+    "mtime": 1780441100.8925927,
+    "ast_hash": "b514a0cdf643fcb6661ffa63eaf09d4f",
+    "semantic_hash": "b514a0cdf643fcb6661ffa63eaf09d4f"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\plans\\PlanConstructor.jsx": {
+    "mtime": 1780965745.2658257,
+    "ast_hash": "399250650469797c39a941b3e751fd93",
+    "semantic_hash": "399250650469797c39a941b3e751fd93"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\plans\\TiempoComida.jsx": {
+    "mtime": 1780865432.323865,
+    "ast_hash": "239fa4be54d524100128b02d3999f5c1",
+    "semantic_hash": "239fa4be54d524100128b02d3999f5c1"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\plans\\components\\ExportadorPDF.jsx": {
+    "mtime": 1780984989.5495572,
+    "ast_hash": "c74b2573ab2e699bf64baea8746ae120",
+    "semantic_hash": "c74b2573ab2e699bf64baea8746ae120"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\plans\\exportarPDF.js": {
+    "mtime": 1780964338.104799,
+    "ast_hash": "3c4a113d03083fc6293237f4552907a0",
+    "semantic_hash": "3c4a113d03083fc6293237f4552907a0"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\modules\\plans\\planUtils.js": {
+    "mtime": 1780441100.8945951,
+    "ast_hash": "d79ea4e5b5285dbb53b73a13db5b9fbe",
+    "semantic_hash": "d79ea4e5b5285dbb53b73a13db5b9fbe"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\services\\api.js": {
+    "mtime": 1780441100.8945951,
+    "ast_hash": "c6978af87eed0cbfdb1eba92c19f3483",
+    "semantic_hash": "c6978af87eed0cbfdb1eba92c19f3483"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\vite.config.js": {
+    "mtime": 1780441100.8945951,
+    "ast_hash": "199e1221ae03d6974fdc8b5e23787b98",
+    "semantic_hash": "199e1221ae03d6974fdc8b5e23787b98"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\package.json": {
+    "mtime": 1780962538.5274634,
+    "ast_hash": "6a79bcb8704d3338d13e97440849e04c",
+    "semantic_hash": "6a79bcb8704d3338d13e97440849e04c"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\README.md": {
+    "mtime": 1780549830.4684553,
+    "ast_hash": "a5d1f3206dc3d1bad011bd028de53b83",
+    "semantic_hash": "a5d1f3206dc3d1bad011bd028de53b83"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\README.md": {
+    "mtime": 1780441100.8788953,
+    "ast_hash": "abfa161e3e5434e3e85394bf03d387a4",
+    "semantic_hash": "abfa161e3e5434e3e85394bf03d387a4"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\index.html": {
+    "mtime": 1780441100.8818946,
+    "ast_hash": "4e08841a7a6610ac8fd5b6510e2a69c7",
+    "semantic_hash": "4e08841a7a6610ac8fd5b6510e2a69c7"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\public\\favicon.svg": {
+    "mtime": 1780441100.8831527,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": "7e840862161341271697daa99a40d76b"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\public\\icons.svg": {
+    "mtime": 1780441100.8841515,
+    "ast_hash": "21c7473c592c67dc87223d49892c8f0a",
+    "semantic_hash": "21c7473c592c67dc87223d49892c8f0a"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\assets\\hero.png": {
+    "mtime": 1780441100.8841515,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
+  },
+  "C:\\Users\\dany_\\OneDrive\\Documentos\\GitHub\\NutriApp\\frontend\\src\\assets\\vite.svg": {
+    "mtime": 1780441100.8851514,
+    "ast_hash": "6d5180a782d64c8cf51ba01c2a2184d8",
+    "semantic_hash": "6d5180a782d64c8cf51ba01c2a2184d8"
+  }
+}
