@@ -3,7 +3,7 @@ import { Check, Pencil, User } from 'lucide-react'
 import { plansAPI } from '../../services/api'
 import BuscadorPaciente from './BuscadorPaciente'
 
-export default function ModalGuardarPlan({ editandoPlanId, plan, nombrePlan, pacienteIdInicial, pacienteNombreInicial, onGuardado, onClose }) {
+export default function ModalGuardarPlan({ editandoPlanId, plan, nombrePlan, pacienteIdInicial, pacienteNombreInicial, consultaId = null, onGuardado, onClose }) {
   const [guardado, setGuardado]         = useState(false)
   const [guardando, setGuardando]       = useState(false)
   const [error, setError]               = useState(null)
@@ -31,6 +31,7 @@ export default function ModalGuardarPlan({ editandoPlanId, plan, nombrePlan, pac
       distribucion_macros: plan.distribucion_macros,
       modo: plan.modo,
       contenido: plan,
+      consulta_id: consultaId,
     }
     try {
       if (editandoPlanId) {

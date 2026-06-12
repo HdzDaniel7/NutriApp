@@ -3,8 +3,22 @@ import { patientsAPI, consultasAPI, plansAPI } from '../../services/api'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import GraficaEvolucion from './GraficaEvolucion'
+import CalculadoraForm from '../calculator/CalculadoraForm'
 import { exportarPlanPDF } from '../plans/exportarPDF'
-import { Mail, Phone, Scale, Ruler, Flame, Check, X, Pencil, FileDown } from 'lucide-react'
+import { Mail, Phone, Scale, Ruler, Flame, Check, X, Pencil, FileDown, Calculator, ArrowRight } from 'lucide-react'
+
+const calcularEdadDe = (fecha) => {
+  if (!fecha) return null
+  const diff = new Date() - new Date(fecha)
+  return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25))
+}
+
+// SQLite guarda distribucion_macros como string JSON
+const parsearDistribucion = (valor) => {
+  if (!valor) return null
+  if (typeof valor === 'object') return valor
+  try { return JSON.parse(valor) } catch { return null }
+}
 
 export default function ExpedientePaciente({ pacienteId, onVolver }) {
   const [paciente, setPaciente] = useState(null)
@@ -27,11 +41,7 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
 
   useEffect(() => { cargar() }, [pacienteId])
 
-  const calcularEdad = (fecha) => {
-    if (!fecha) return null
-    const diff = new Date() - new Date(fecha)
-    return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25))
-  }
+  const calcularEdad = calcularEdadDe
 
   const ultimaConsulta = paciente?.consultas?.[0]
 
@@ -92,6 +102,7 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
                     { label: '% Grasa',   val: ultimaConsulta.pct_grasa, unit: '%' },
                     { label: 'Cintura',   val: ultimaConsulta.cintura,   unit: 'cm' },
                     { label: 'Cadera',    val: ultimaConsulta.cadera,    unit: 'cm' },
+                    { label: 'VCT',       val: ultimaConsulta.vct_kcal,  unit: 'kcal' },
                   ].map(({ label, val, unit }) => val && (
                     <div key={label} style={s.medidaItem}>
                       <div style={s.medidaLabel}>{label}</div>
@@ -148,6 +159,21 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
                   {c.pct_grasa && <span style={s.medidaBadge}><Flame size={10} style={{marginRight:3,verticalAlign:'middle'}}/>{c.pct_grasa}% grasa</span>}
                   {c.cintura && <span style={s.medidaBadge}>Cintura {c.cintura} cm</span>}
                   {c.cadera  && <span style={s.medidaBadge}>Cadera {c.cadera} cm</span>}
+                  {c.vct_kcal && <span style={s.vctBadge}>VCT {c.vct_kcal} kcal</span>}
+                  {c.vct_kcal && (
+                    <button style={s.crearPlanBtn}
+                      onClick={() => navigate('/plan', {
+                        state: {
+                          pacienteId: paciente.id,
+                          pacienteNombre: `${paciente.nombre} ${paciente.apellido || ''}`.trim(),
+                          vctInicial: c.vct_kcal,
+                          distribucionInicial: parsearDistribucion(c.distribucion_macros),
+                          consultaId: c.id,
+                        }
+                      })}>
+                      Crear plan con este VCT <ArrowRight size={11} style={{verticalAlign:'middle'}}/>
+                    </button>
+                  )}
                 </div>
                 {c.notas && <div style={s.consultaNotas}>{c.notas}</div>}
               </div>
@@ -178,7 +204,7 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
                     {renombrandoPlanId === p.id ? (
                     <div style={s.renombrando}>
                         <input
-                        style={s.renombrандоInput}
+                        style={s.renombrandoInput}
                         value={nuevoPlanNombre}
                         onChange={e => setNuevoPlanNombre(e.target.value)}
                         onKeyDown={e => {
@@ -255,6 +281,7 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
       {modalConsulta && (
         <FormConsulta
           pacienteId={pacienteId}
+          paciente={paciente}
           onGuardar={() => { setModalConsulta(false); cargar() }}
           onCerrar={() => setModalConsulta(false)}
         />
@@ -275,7 +302,7 @@ export default function ExpedientePaciente({ pacienteId, onVolver }) {
 // ─────────────────────────────────────────────
 // Formulario de nueva consulta — componente interno
 // ─────────────────────────────────────────────
-function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
+function FormConsulta({ pacienteId, paciente, onGuardar, onCerrar }) {
   const [form, setForm] = useState({
     fecha: new Date().toISOString().split('T')[0],
     peso: '', talla: '', pct_grasa: '', imc: '',
@@ -283,6 +310,8 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
   })
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState(null)
+  const [mostrarCalc, setMostrarCalc] = useState(false)
+  const [resultadoCalc, setResultadoCalc] = useState(null)
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
@@ -295,7 +324,16 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
   const handleGuardar = () => {
     if (!form.fecha) { setError('La fecha es requerida'); return }
     setGuardando(true)
-    consultasAPI.create(pacienteId, { ...form, imc: imcCalculado || form.imc })
+    const requerimientos = (mostrarCalc && resultadoCalc) ? {
+      formula_tmb:         resultadoCalc.formula,
+      factor_actividad:    resultadoCalc.factorActividad,
+      objetivo_kcal:       resultadoCalc.objetivo,
+      tmb_kcal:            resultadoCalc.tmb,
+      get_kcal:            resultadoCalc.get,
+      vct_kcal:            resultadoCalc.vct,
+      distribucion_macros: resultadoCalc.dist,
+    } : {}
+    consultasAPI.create(pacienteId, { ...form, imc: imcCalculado || form.imc, ...requerimientos })
       .then(() => onGuardar())
       .catch(err => setError(err.response?.data?.error || 'Error al guardar'))
       .finally(() => setGuardando(false))
@@ -303,7 +341,7 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
 
   return (
     <div style={s.overlay} onClick={onCerrar}>
-      <div style={s.modal} onClick={e => e.stopPropagation()}>
+      <div style={{ ...s.modal, maxWidth: mostrarCalc ? '760px' : '600px' }} onClick={e => e.stopPropagation()}>
         <div style={s.modalHeader}>
           <span style={s.modalTitulo}>Nueva consulta</span>
           <button style={s.cerrarBtn} onClick={onCerrar}><X size={16}/></button>
@@ -332,6 +370,35 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
               </div>
             ))}
           </div>
+
+          {/* Requerimientos energéticos — calculadora embebida */}
+          <button style={s.calcToggle} onClick={() => setMostrarCalc(v => !v)}>
+            <Calculator size={14}/>
+            {mostrarCalc ? 'Ocultar requerimientos energéticos' : 'Calcular requerimientos energéticos (TMB · GET · VCT)'}
+          </button>
+          {mostrarCalc && (
+            <div>
+              {(!parseFloat(form.peso) || !parseFloat(form.talla)) && (
+                <div style={s.calcAviso}>Captura peso y talla arriba para habilitar el cálculo.</div>
+              )}
+              {!calcularEdadDe(paciente?.fecha_nacimiento) && (
+                <div style={s.calcAviso}>El paciente no tiene fecha de nacimiento registrada — agrégala en su expediente para calcular la edad.</div>
+              )}
+              <CalculadoraForm
+                ocultarDatos
+                sincronizar
+                datosIniciales={{
+                  sexo: paciente?.sexo || 'M',
+                  edad: calcularEdadDe(paciente?.fecha_nacimiento) ?? '',
+                  peso: form.peso,
+                  talla: form.talla,
+                  pctGrasa: form.pct_grasa,
+                }}
+                onResultado={setResultadoCalc}
+              />
+            </div>
+          )}
+
           <div style={s.field}>
             <label style={s.label}>Notas</label>
             <textarea style={s.textarea} rows={3} placeholder="Observaciones de la consulta..."
@@ -340,6 +407,9 @@ function FormConsulta({ pacienteId, onGuardar, onCerrar }) {
           {error && <div style={s.error}>{error}</div>}
         </div>
         <div style={s.modalFooter}>
+          {mostrarCalc && resultadoCalc?.vct && (
+            <span style={s.vctResumen}>VCT: <b>{resultadoCalc.vct} kcal</b> — se guardará con la consulta</span>
+          )}
           <button style={s.cancelarBtn} onClick={onCerrar}>Cancelar</button>
           <button style={s.guardarBtn} onClick={handleGuardar} disabled={guardando}>
             {guardando ? 'Guardando...' : 'Guardar consulta'}
@@ -438,54 +508,59 @@ function ModalVerPlan({ planId, paciente, usuario, onCerrar }) {
 }
 
 const s = {
-  msg:            { textAlign: 'center', padding: '3rem', fontSize: '14px', color: '#a8a29e' },
-  headerCard:     { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' },
-  volverBtn:      { background: 'none', border: 'none', fontSize: '13px', color: '#57534e', cursor: 'pointer', padding: '0 0 12px 0' },
+  msg:            { textAlign: 'center', padding: '3rem', fontSize: '14px', color: 'var(--ui-txt-muted)' },
+  headerCard:     { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '20px', marginBottom: '14px' },
+  volverBtn:      { background: 'none', border: 'none', fontSize: '13px', color: 'var(--ui-txt-secondary)', cursor: 'pointer', padding: '0 0 12px 0' },
   pacienteHeader: { display: 'flex', gap: '14px', alignItems: 'center', marginBottom: '1rem' },
-  avatar:         { width: '48px', height: '48px', borderRadius: '50%', background: 'var(--color-primario-bg)', color: 'var(--color-primario)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '600', flexShrink: 0 },
-  nombre:         { fontSize: '20px', fontWeight: '600', color: '#1c1917', marginBottom: '6px' },
+  avatar:         { width: '48px', height: '48px', borderRadius: '50%', background: 'var(--ui-green-bg)', color: 'var(--ui-green)', border: '1.5px solid var(--ui-green-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '700', flexShrink: 0 },
+  nombre:         { fontSize: '20px', fontWeight: '700', color: 'var(--ui-txt-primary)', marginBottom: '6px', letterSpacing: '-0.3px' },
   meta:           { display: 'flex', gap: '6px', flexWrap: 'wrap' },
-  badge:          { fontSize: '11px', background: '#f5f5f4', color: '#78716c', padding: '3px 10px', borderRadius: '20px' },
-  tabs:           { display: 'flex', gap: '4px', borderTop: '1px solid #f5f5f4', paddingTop: '12px' },
-  tab:            { padding: '6px 16px', borderRadius: '20px', border: 'none', background: 'transparent', fontSize: '13px', color: '#57534e', cursor: 'pointer' },
-  tabActive:      { background: 'var(--color-primario-bg)', color: 'var(--color-primario)', fontWeight: '500' },
-  grid2:          { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' },
+  badge:          { fontSize: '11px', background: 'var(--ui-green-bg)', color: 'var(--ui-txt-secondary)', padding: '3px 10px', borderRadius: '20px', border: '1px solid var(--ui-border-subtle)' },
+  tabs:           { display: 'flex', gap: '4px', borderTop: '1px solid var(--ui-border-subtle)', paddingTop: '12px' },
+  tab:            { padding: '6px 16px', borderRadius: '20px', border: '1px solid transparent', background: 'transparent', fontSize: '13px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  tabActive:      { background: 'var(--ui-green-bg)', color: 'var(--ui-green)', fontWeight: '600', border: '1px solid var(--ui-green-pale)' },
+  grid2:          { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '14px' },
   grid3:          { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' },
-  card:           { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' },
+  card:           { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '20px', marginBottom: '14px' },
   cardHeader:     { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' },
-  cardTitle:      { fontSize: '12px', fontWeight: '500', color: '#78716c', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.75rem' },
-  fechaConsulta:  { fontSize: '14px', fontWeight: '500', color: '#1c1917', marginBottom: '10px' },
+  cardTitle:      { fontSize: '12px', fontWeight: '600', color: 'var(--ui-txt-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '.75rem' },
+  fechaConsulta:  { fontSize: '14px', fontWeight: '500', color: 'var(--ui-txt-primary)', marginBottom: '10px' },
   medidasGrid:    { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '10px' },
-  medidaItem:     { background: '#fafaf9', borderRadius: '6px', padding: '8px 10px' },
-  medidaLabel:    { fontSize: '11px', color: '#78716c', marginBottom: '2px' },
-  medidaVal:      { fontSize: '15px', fontWeight: '500', color: '#1c1917' },
-  notasBox:       { fontSize: '13px', color: '#57534e', background: '#fafaf9', borderRadius: '6px', padding: '8px 12px', marginBottom: '10px', lineHeight: 1.6 },
-  emptyMsg:       { fontSize: '13px', color: '#a8a29e', textAlign: 'center', padding: '1.5rem 0' },
-  btnPrimario:    { padding: '7px 16px', borderRadius: '8px', border: 'none', background: 'var(--color-primario)', color: '#fff', fontSize: '13px', cursor: 'pointer', fontWeight: '500', marginTop: '10px' },
-  consultaRow:    { padding: '12px 0', borderBottom: '1px solid #f5f5f4' },
-  consultaFecha:  { fontSize: '13px', fontWeight: '500', color: '#1c1917', marginBottom: '6px' },
-  consultaMedidas:{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '4px' },
-  medidaBadge:    { fontSize: '11px', background: '#f5f5f4', color: '#57534e', padding: '2px 8px', borderRadius: '20px' },
-  consultaNotas:  { fontSize: '12px', color: '#78716c', marginTop: '4px' },
-  planRow:        { padding: '10px 0', borderBottom: '1px solid #f5f5f4' },
-  planNombre:     { fontSize: '14px', fontWeight: '500', color: '#1c1917', marginBottom: '4px' },
+  medidaItem:     { background: 'var(--ui-bg-page)', borderRadius: '8px', padding: '8px 10px', border: '1px solid var(--ui-border-subtle)' },
+  medidaLabel:    { fontSize: '11px', color: 'var(--ui-txt-muted)', marginBottom: '2px' },
+  medidaVal:      { fontSize: '15px', fontWeight: '600', color: 'var(--ui-txt-primary)' },
+  notasBox:       { fontSize: '13px', color: 'var(--ui-txt-secondary)', background: 'var(--ui-bg-page)', borderRadius: '8px', padding: '8px 12px', marginBottom: '10px', lineHeight: 1.6, border: '1px solid var(--ui-border-subtle)' },
+  emptyMsg:       { fontSize: '13px', color: 'var(--ui-txt-muted)', textAlign: 'center', padding: '1.5rem 0' },
+  btnPrimario:    { padding: '7px 16px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '13px', cursor: 'pointer', fontWeight: '600', marginTop: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' },
+  consultaRow:    { padding: '12px 0', borderBottom: '1px solid var(--ui-border-subtle)' },
+  consultaFecha:  { fontSize: '13px', fontWeight: '500', color: 'var(--ui-txt-primary)', marginBottom: '6px' },
+  consultaMedidas:{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '4px', alignItems: 'center' },
+  medidaBadge:    { fontSize: '11px', background: 'var(--ui-bg-page)', color: 'var(--ui-txt-secondary)', padding: '2px 8px', borderRadius: '20px', border: '1px solid var(--ui-border-subtle)' },
+  vctBadge:       { fontSize: '11px', background: 'var(--ui-green-bg)', color: 'var(--ui-green)', padding: '2px 8px', borderRadius: '20px', fontWeight: '600', border: '1px solid var(--ui-green-pale)' },
+  crearPlanBtn:   { fontSize: '11px', padding: '3px 10px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', cursor: 'pointer', fontWeight: '600' },
+  consultaNotas:  { fontSize: '12px', color: 'var(--ui-txt-muted)', marginTop: '4px' },
+  planRow:        { padding: '10px 0', borderBottom: '1px solid var(--ui-border-subtle)' },
+  planNombre:     { fontSize: '14px', fontWeight: '500', color: 'var(--ui-txt-primary)', marginBottom: '4px', cursor: 'pointer' },
   planMeta:       { display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' },
-  planFecha:      { fontSize: '11px', color: '#a8a29e', marginLeft: 'auto' },
-  overlay:        { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' },
-  modal:          { background: '#fff', borderRadius: '12px', width: '100%', maxWidth: '600px', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
-  modalHeader:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem', borderBottom: '1px solid #e7e5e4' },
-  modalTitulo:    { fontSize: '16px', fontWeight: '600', color: '#1c1917' },
-  cerrarBtn:      { background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', color: '#78716c' },
+  planFecha:      { fontSize: '11px', color: 'var(--ui-txt-muted)', marginLeft: 'auto' },
+  overlay:        { position: 'fixed', inset: 0, background: 'rgba(20,40,28,0.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(2px)' },
+  modal:          { background: 'var(--ui-bg-page)', borderRadius: '14px', width: '100%', maxWidth: '600px', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid var(--ui-border)' },
+  modalHeader:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--ui-border)', background: '#fff' },
+  modalTitulo:    { fontSize: '16px', fontWeight: '600', color: 'var(--ui-txt-primary)' },
+  cerrarBtn:      { background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', color: 'var(--ui-txt-muted)' },
   modalBody:      { padding: '1.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' },
-  modalFooter:    { display: 'flex', gap: '8px', justifyContent: 'flex-end', padding: '1rem 1.5rem', borderTop: '1px solid #e7e5e4' },
+  modalFooter:    { display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center', padding: '1rem 1.5rem', borderTop: '1px solid var(--ui-border)', background: '#fff' },
   field:          { display: 'flex', flexDirection: 'column', gap: '4px' },
-  label:          { fontSize: '13px', color: '#57534e', fontWeight: '500' },
-  input:          { padding: '8px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none' },
-  textarea:       { padding: '8px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none', resize: 'vertical', fontFamily: 'inherit' },
-  error:          { background: '#fef2f2', borderRadius: '6px', padding: '8px 12px', fontSize: '13px', color: '#ef4444' },
-  cancelarBtn:    { padding: '8px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', fontSize: '14px', color: '#57534e', cursor: 'pointer' },
-  guardarBtn:     { padding: '8px 20px', borderRadius: '8px', border: 'none', background: 'var(--color-primario)', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '500' },
-  verPlanBtn:     { padding: '4px 10px', borderRadius: '6px', border: 'none', background: 'var(--color-primario-bg)', fontSize: '12px', color: 'var(--color-primario)a', cursor: 'pointer', fontWeight: '500' },
+  label:          { fontSize: '13px', color: 'var(--ui-txt-secondary)', fontWeight: '500' },
+  input:          { padding: '8px 10px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', fontSize: '14px', outline: 'none', background: '#fff' },
+  textarea:       { padding: '8px 10px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', fontSize: '14px', outline: 'none', resize: 'vertical', fontFamily: 'inherit', background: '#fff' },
+  error:          { background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', color: '#DC2626' },
+  cancelarBtn:    { padding: '8px 16px', borderRadius: '10px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', background: '#fff', fontSize: '14px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  guardarBtn:     { padding: '8px 20px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '600' },
+  verPlanBtn:     { padding: '4px 10px', borderRadius: '6px', border: 'none', background: 'var(--ui-green-bg)', fontSize: '12px', color: 'var(--ui-green)', cursor: 'pointer', fontWeight: '500' },
   renombrando:    { display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '6px' },
-  renombrандоInput:{ flex: 1, padding: '6px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--color-primario-border)', fontSize: '14px', outline: 'none' },
+  renombrandoInput:{ flex: 1, padding: '6px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-green-pale)', fontSize: '14px', outline: 'none' },
+  calcToggle:     { display: 'flex', alignItems: 'center', gap: '6px', padding: '9px 14px', borderRadius: '10px', border: '1px dashed var(--ui-green-pale)', background: 'var(--ui-green-bg)', fontSize: '13px', color: 'var(--ui-green)', cursor: 'pointer', fontWeight: '600', justifyContent: 'center' },
+  calcAviso:      { fontSize: '12px', color: 'var(--ui-txt-muted)', background: 'var(--ui-bg-page)', border: '1px solid var(--ui-border-subtle)', borderRadius: '8px', padding: '6px 10px', marginBottom: '8px', textAlign: 'center' },
+  vctResumen:     { fontSize: '12px', color: 'var(--ui-txt-secondary)', marginRight: 'auto' },
 }

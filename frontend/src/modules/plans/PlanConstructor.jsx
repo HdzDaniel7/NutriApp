@@ -8,20 +8,29 @@ import ModalGuardarPlan from './ModalGuardarPlan'
 import ModalNuevoDia from './ModalNuevoDia'
 import { useExportarPDF, PlantillaOffscreen } from './components/ExportadorPDF'
 import { Save, FileDown, X } from 'lucide-react'
+import { PageHeader } from '../../components/ui'
 
-export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null, pacienteIdInicial = null, pacienteNombreInicial = null }) {
+export default function PlanConstructor({ planInicial = null, planId = null, onPlanGuardado = null, pacienteIdInicial = null, pacienteNombreInicial = null, vctInicial = null, consultaIdInicial = null, distribucionInicial = null }) {
   const { usuario } = useAuth()
   const [ultimoAgregadoId, setUltimoAgregadoId] = useState(null)
   const [vctInput, setVctInput] = useState(
     planInicial?.vct_objetivo?.toString() ||
-    planInicial?.contenido?.vct_objetivo?.toString() || ''
+    planInicial?.contenido?.vct_objetivo?.toString() ||
+    vctInicial?.toString() || ''
   )
   const [plan, setPlan] = useState(() => {
-    if (!planInicial) return null
-    const contenido = planInicial.contenido
-    if (!contenido || !contenido.tiempos) return null
-    return contenido
+    if (planInicial) {
+      const contenido = planInicial.contenido
+      if (!contenido || !contenido.tiempos) return null
+      return contenido
+    }
+    // VCT recibido desde la calculadora o la consulta: el plan arranca
+    // directo, sin pasar por el formulario de VCT objetivo
+    const vct = parseFloat(vctInicial)
+    if (vct > 0) return crearPlanVacio(vct, distribucionInicial)
+    return null
   })
+  const [vctEdicion, setVctEdicion] = useState(null) // string mientras se edita; null en reposo
   const [editandoPlanId]                          = useState(planId)
   const [buscadorAbierto, setBuscadorAbierto]     = useState(false)
   const [tiempoActivo, setTiempoActivo]           = useState(null)
@@ -54,7 +63,14 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
   const iniciarPlan = () => {
     const vct = parseFloat(vctInput)
     if (!vct || vct <= 0) return
-    setPlan(crearPlanVacio(vct))
+    setPlan(crearPlanVacio(vct, distribucionInicial))
+  }
+
+  // Edición inline del VCT objetivo desde la tarjeta de resumen
+  const confirmarVct = () => {
+    const v = parseFloat(vctEdicion)
+    if (v > 0) setPlan(prev => ({ ...prev, vct_objetivo: v }))
+    setVctEdicion(null)
   }
 
   const handleAgregarAlimento = (tiempoId) => {
@@ -131,12 +147,15 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
 
   if (!plan) {
     return (
-      <div>
-        <h1 style={s.h1}>Constructor de Planes</h1>
+      <div className="nd-page" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <PageHeader titulo="Constructor de Planes"
+          subtitulo={pacienteNombreInicial ? `Plan para ${pacienteNombreInicial}` : null} />
         <div style={s.iniciarCard}>
           <div style={s.iniciarTitulo}>¿Cuál es el VCT objetivo del paciente?</div>
           <div style={s.iniciarDesc}>
-            Ingresa las kilocalorías diarias objetivo. Puedes obtenerlo desde la calculadora nutrimental.
+            {vctInicial
+              ? 'VCT pre-cargado desde la consulta del paciente — ajústalo si lo necesitas.'
+              : 'Ingresa las kilocalorías diarias objetivo, o calcúlalas desde la consulta del paciente para ligarlas a su expediente.'}
           </div>
           <div style={s.iniciarRow}>
             <input
@@ -213,7 +232,21 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
         <div style={s.resumenRow}>
           <div style={s.resumenItem}>
             <div style={s.resumenLabel}>Objetivo</div>
-            <div style={s.resumenVal}>{plan.vct_objetivo} kcal</div>
+            <div style={s.resumenVal}>
+              <input
+                style={s.vctObjetivoInput}
+                type="text"
+                inputMode="numeric"
+                title="Editar VCT objetivo"
+                aria-label="VCT objetivo en kcal"
+                value={vctEdicion !== null ? vctEdicion : plan.vct_objetivo}
+                onChange={e => setVctEdicion(e.target.value.replace(/[^\d.]/g, ''))}
+                onFocus={e => e.target.select()}
+                onBlur={confirmarVct}
+                onKeyDown={e => e.key === 'Enter' && e.target.blur()}
+              />
+              <span style={s.vctUnidad}>kcal</span>
+            </div>
           </div>
           <div style={s.resumenItem}>
             <div style={s.resumenLabel}>Acumulado</div>
@@ -398,6 +431,7 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
           nombrePlan={nombrePlan}
           pacienteIdInicial={pacienteIdInicial || ''}
           pacienteNombreInicial={pacienteNombreInicial || ''}
+          consultaId={consultaIdInicial}
           onGuardado={() => { if (onPlanGuardado) onPlanGuardado() }}
           onClose={() => setMostrarGuardar(false)}
         />
@@ -421,49 +455,50 @@ export default function PlanConstructor({ planInicial = null, planId = null, onP
 }
 
 const s = {
-  h1:                  { fontSize: '20px', fontWeight: '500', color: '#18181b', margin: 0 },
   topBar:              { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '8px' },
   topBarAcciones:      { display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' },
-  modoToggle:          { display: 'flex' },
-  modoBtn:             { padding: '5px 13px', fontSize: '11px', cursor: 'pointer', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d4d4d8', background: '#fff', color: '#3f3f46' },
-  modoBtnActive:       { background: 'linear-gradient(135deg, var(--color-primario-light), var(--color-primario))', color: '#fff', borderColor: 'transparent', fontWeight: '500' },
-  resetBtn:            { padding: '5px 13px', borderRadius: '20px', border: '1px solid #e4e4e7', background: '#fff', fontSize: '12px', color: '#3f3f46', cursor: 'pointer' },
-  guardarPlanBtn:      { padding: '5px 13px', borderRadius: '20px', border: 'none', background: '#f4f4f5', fontSize: '12px', color: '#3f3f46', cursor: 'pointer', fontWeight: '500' },
-  nombrePlanInput:     { fontSize: '20px', fontWeight: '500', color: '#18181b', border: 'none', borderBottom: '2px solid #e4e4e7', outline: 'none', background: 'transparent', padding: '2px 4px', borderRadius: '4px', minWidth: '220px' },
-  iniciarCard:         { background: '#fff', border: '0.5px solid #e4e4e7', borderRadius: '12px', padding: '2rem', maxWidth: '440px', margin: '3rem auto' },
-  iniciarTitulo:       { fontSize: '17px', fontWeight: '600', color: '#18181b', marginBottom: '8px' },
-  iniciarDesc:         { fontSize: '13px', color: '#71717a', marginBottom: '1.5rem', lineHeight: 1.6 },
+  modoToggle:          { display: 'flex', borderRadius: '20px', overflow: 'hidden', border: '1px solid var(--ui-border)' },
+  modoBtn:             { padding: '5px 13px', fontSize: '11px', cursor: 'pointer', border: 'none', background: '#fff', color: 'var(--ui-txt-secondary)' },
+  modoBtnActive:       { background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontWeight: '600' },
+  resetBtn:            { padding: '5px 13px', borderRadius: '20px', border: '1px solid var(--ui-border)', background: '#fff', fontSize: '12px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  guardarPlanBtn:      { padding: '5px 13px', borderRadius: '20px', border: '1px solid var(--ui-green-pale)', background: 'var(--ui-green-bg)', fontSize: '12px', color: 'var(--ui-green)', cursor: 'pointer', fontWeight: '600' },
+  nombrePlanInput:     { fontSize: '20px', fontWeight: '600', color: 'var(--ui-txt-primary)', border: 'none', borderBottom: '2px solid var(--ui-border)', outline: 'none', background: 'transparent', padding: '2px 4px', borderRadius: '4px', minWidth: '220px', letterSpacing: '-0.3px' },
+  iniciarCard:         { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '2rem', maxWidth: '440px', margin: '2rem auto', width: '100%' },
+  iniciarTitulo:       { fontSize: '17px', fontWeight: '700', color: 'var(--ui-txt-primary)', marginBottom: '8px', letterSpacing: '-0.2px' },
+  iniciarDesc:         { fontSize: '13px', color: 'var(--ui-txt-muted)', marginBottom: '1.5rem', lineHeight: 1.6 },
   iniciarRow:          { display: 'flex', gap: '8px', alignItems: 'center' },
-  vctInput:            { width: '120px', padding: '8px 12px', borderRadius: '8px', border: '1px solid #d4d4d8', fontSize: '16px', outline: 'none' },
-  vctLabel:            { fontSize: '14px', color: '#71717a' },
-  iniciarBtn:          { padding: '8px 20px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, var(--color-primario-light), var(--color-primario))', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '500', marginLeft: 'auto' },
-  resumenCard:         { background: '#fff', border: '0.5px solid #e4e4e7', borderRadius: '12px', padding: '1.25rem', marginBottom: '1rem' },
+  vctInput:            { width: '120px', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--ui-border)', fontSize: '16px', outline: 'none', color: 'var(--ui-txt-primary)' },
+  vctLabel:            { fontSize: '14px', color: 'var(--ui-txt-muted)' },
+  iniciarBtn:          { padding: '8px 20px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '600', marginLeft: 'auto', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' },
+  resumenCard:         { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '20px', marginBottom: '14px' },
   resumenRow:          { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '12px' },
   resumenItem:         { textAlign: 'center' },
-  resumenLabel:        { fontSize: '10px', color: '#a1a1aa', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: '4px' },
-  resumenVal:          { fontSize: '22px', fontWeight: '500', color: '#18181b' },
-  barraFondo:          { height: '6px', borderRadius: '3px', background: '#e4e4e7', overflow: 'hidden', marginBottom: '12px' },
+  resumenLabel:        { fontSize: '10px', color: 'var(--ui-txt-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: '600' },
+  resumenVal:          { fontSize: '22px', fontWeight: '700', color: 'var(--ui-txt-primary)' },
+  vctObjetivoInput:    { width: '84px', fontSize: '22px', fontWeight: '700', color: 'var(--ui-txt-primary)', border: 'none', borderBottom: '2px dashed var(--ui-border)', outline: 'none', background: 'transparent', textAlign: 'center', padding: '0 0 1px', fontFamily: 'inherit' },
+  vctUnidad:           { fontSize: '13px', fontWeight: '600', color: 'var(--ui-txt-muted)', marginLeft: '4px' },
+  barraFondo:          { height: '6px', borderRadius: '3px', background: 'var(--ui-border-subtle)', overflow: 'hidden', marginBottom: '12px' },
   barraRelleno:        { height: '100%', borderRadius: '3px', transition: 'width .4s, background .3s' },
   macrosTotales:       { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' },
-  macroTotal:          { background: '#f4f4f5', borderRadius: '8px', padding: '8px 12px', textAlign: 'center' },
-  macroTotalLabel:     { fontSize: '11px', fontWeight: '500', marginBottom: '2px' },
-  macroTotalVal:       { fontSize: '16px', fontWeight: '600', color: '#18181b' },
-  addTiempoBtn:        { width: '100%', padding: '12px', borderRadius: '10px', border: '1.5px dashed #d4d4d8', background: 'transparent', fontSize: '13px', color: '#a1a1aa', cursor: 'pointer', marginTop: '4px' },
-  nuevoTiempoCard:     { background: '#fff', border: '0.5px solid #e4e4e7', borderRadius: '12px', padding: '1rem', marginBottom: '8px' },
-  nuevoTiempoInput:    { width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid #d4d4d8', fontSize: '14px', outline: 'none', boxSizing: 'border-box', marginBottom: '10px' },
+  macroTotal:          { background: 'var(--ui-bg-page)', borderRadius: '8px', padding: '8px 12px', textAlign: 'center', border: '1px solid var(--ui-border-subtle)' },
+  macroTotalLabel:     { fontSize: '11px', fontWeight: '600', marginBottom: '2px' },
+  macroTotalVal:       { fontSize: '16px', fontWeight: '600', color: 'var(--ui-txt-primary)' },
+  addTiempoBtn:        { width: '100%', padding: '12px', borderRadius: '10px', border: '1.5px dashed var(--ui-green-pale)', background: 'transparent', fontSize: '13px', color: 'var(--ui-txt-muted)', cursor: 'pointer', marginTop: '4px' },
+  nuevoTiempoCard:     { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '1rem', marginBottom: '8px' },
+  nuevoTiempoInput:    { width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--ui-border)', fontSize: '14px', outline: 'none', boxSizing: 'border-box', marginBottom: '10px' },
   sugeridos:           { display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' },
   nuevoTiempoAcciones: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
-  cancelarBtn:         { padding: '6px 14px', borderRadius: '20px', border: '1px solid #e4e4e7', background: '#fff', fontSize: '13px', color: '#3f3f46', cursor: 'pointer' },
-  confirmarBtn:        { padding: '6px 14px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, var(--color-primario-light), var(--color-primario))', color: '#fff', fontSize: '13px', cursor: 'pointer', fontWeight: '500' },
+  cancelarBtn:         { padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--ui-border)', background: '#fff', fontSize: '13px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  confirmarBtn:        { padding: '6px 14px', borderRadius: '20px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '13px', cursor: 'pointer', fontWeight: '600' },
   diasTabs:            { display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'center' },
-  diaTab:              { padding: '5px 14px', borderRadius: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e4e4e7', background: '#fff', fontSize: '12px', color: '#3f3f46', cursor: 'pointer' },
-  diaTabActive:        { background: 'linear-gradient(135deg, var(--color-primario-light), var(--color-primario))', color: '#fff', borderColor: 'transparent', fontWeight: '500' },
-  addDiaBtn:           { padding: '5px 12px', borderRadius: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d4d4d8', background: '#f4f4f5', fontSize: '12px', color: '#71717a', cursor: 'pointer' },
+  diaTab:              { padding: '5px 14px', borderRadius: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', background: '#fff', fontSize: '12px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  diaTabActive:        { background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', borderColor: 'transparent', fontWeight: '600' },
+  addDiaBtn:           { padding: '5px 12px', borderRadius: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', background: 'var(--ui-bg-page)', fontSize: '12px', color: 'var(--ui-txt-muted)', cursor: 'pointer' },
   diaTabWrapper:       { display: 'flex', alignItems: 'center', gap: '2px' },
-  diaTabInput:         { padding: '5px 10px', borderRadius: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--color-primario-light)', fontSize: '12px', outline: 'none', width: '100px' },
-  diaTabDelete:        { background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', color: '#d4d4d8', padding: '2px 4px', borderRadius: '4px' },
+  diaTabInput:         { padding: '5px 10px', borderRadius: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-green-pale)', fontSize: '12px', outline: 'none', width: '100px' },
+  diaTabDelete:        { background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', color: 'var(--ui-txt-muted)', padding: '2px 4px', borderRadius: '4px' },
 }
 
 const sug = {
-  btn: { padding: '4px 12px', borderRadius: '20px', border: '1px solid #e7e5e4', background: '#fafaf9', fontSize: '12px', color: '#57534e', cursor: 'pointer' },
+  btn: { padding: '4px 12px', borderRadius: '20px', border: '1px solid var(--ui-border)', background: 'var(--ui-bg-page)', fontSize: '12px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
 }

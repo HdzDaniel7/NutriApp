@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { foodsAPI } from '../../services/api'
+import { PageHeader } from '../../components/ui'
 
 export default function Alimentos() {
   const [busqueda, setBusqueda] = useState('')
@@ -34,8 +35,8 @@ export default function Alimentos() {
   }, [busqueda, tipoSeleccionado])
 
   return (
-    <div>
-      <h1 style={s.h1}>Base de Alimentos</h1>
+    <div className="nd-page" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <PageHeader titulo="Base de Alimentos" subtitulo="Consulta la información nutricional por cada 100 g" />
 
       {/* Filtros */}
       <div style={s.card}>
@@ -191,28 +192,27 @@ export default function Alimentos() {
 }
 
 const s = {
-  h1:              { fontSize: '22px', fontWeight: '600', color: '#1c1917', marginBottom: '1.5rem' },
-  card:            { backgroundColor: '#fff', border: '1px solid #e7e5e4', borderRadius: '10px', padding: '1.25rem', marginBottom: '1rem' },
+  card:            { backgroundColor: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '20px' },
   filtros:         { display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' },
-  label:           { display: 'block', fontSize: '13px', color: '#57534e', marginBottom: '4px' },
-  input:           { width: '100%', padding: '7px 10px', borderRadius: '6px', border: '1px solid #d6d3d1', fontSize: '14px', outline: 'none', boxSizing: 'border-box' },
-  clearBtn:        { padding: '7px 16px', borderRadius: '6px', border: '1px solid #d6d3d1', background: '#fafaf9', fontSize: '13px', color: '#57534e', cursor: 'pointer', alignSelf: 'flex-end' },
-  grid2:           { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' },
-  msg:             { fontSize: '13px', color: '#a8a29e', textAlign: 'center', padding: '2rem 0' },
-  alimentoRow:     { padding: '10px 12px', borderRadius: '6px', cursor: 'pointer', marginBottom: '4px', border: '1px solid transparent' },
-  alimentoActive:  { background: 'var(--color-primario-bg)', border: '1px solid var(--color-primario-border)' },
-  alimentoNombre:  { fontSize: '14px', color: '#1c1917', marginBottom: '4px' },
+  label:           { display: 'block', fontSize: '13px', color: 'var(--ui-txt-secondary)', marginBottom: '4px', fontWeight: '500' },
+  input:           { width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--ui-border)', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: 'var(--ui-txt-primary)', background: '#fff' },
+  clearBtn:        { padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--ui-border)', background: '#fff', fontSize: '13px', color: 'var(--ui-txt-secondary)', cursor: 'pointer', alignSelf: 'flex-end' },
+  grid2:           { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '14px' },
+  msg:             { fontSize: '13px', color: 'var(--ui-txt-muted)', textAlign: 'center', padding: '2rem 0' },
+  alimentoRow:     { padding: '10px 12px', borderRadius: '8px', cursor: 'pointer', marginBottom: '4px', border: '1px solid transparent' },
+  alimentoActive:  { background: 'var(--ui-green-bg)', border: '1px solid var(--ui-green-pale)' },
+  alimentoNombre:  { fontSize: '14px', color: 'var(--ui-txt-primary)', marginBottom: '4px' },
   alimentoMeta:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  badge:           { fontSize: '11px', background: '#f5f5f4', color: '#78716c', padding: '2px 8px', borderRadius: '20px' },
-  kcal:            { fontSize: '12px', color: '#57534e', fontWeight: '500' },
-  detalleNombre:   { fontSize: '17px', fontWeight: '600', color: '#1c1917', marginBottom: '4px' },
-  detalleCientifico: { fontSize: '12px', color: '#78716c', fontStyle: 'italic', marginBottom: '8px' },
-  detalleBadge:    { display: 'inline-block', fontSize: '11px', background: 'var(--color-primario-bg)', color: 'var(--color-primario)', padding: '2px 10px', borderRadius: '20px', marginBottom: '1rem' },
-  seccion:         { fontSize: '12px', fontWeight: '500', color: '#78716c', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '1rem 0 0.5rem', borderTop: '1px solid #f5f5f4', paddingTop: '0.75rem' },
+  badge:           { fontSize: '11px', background: 'var(--ui-bg-page)', color: 'var(--ui-txt-muted)', padding: '2px 8px', borderRadius: '20px', border: '1px solid var(--ui-border-subtle)' },
+  kcal:            { fontSize: '12px', color: 'var(--ui-txt-secondary)', fontWeight: '600' },
+  detalleNombre:   { fontSize: '17px', fontWeight: '700', color: 'var(--ui-txt-primary)', marginBottom: '4px', letterSpacing: '-0.2px' },
+  detalleCientifico: { fontSize: '12px', color: 'var(--ui-txt-muted)', fontStyle: 'italic', marginBottom: '8px' },
+  detalleBadge:    { display: 'inline-block', fontSize: '11px', background: 'var(--ui-green-bg)', color: 'var(--ui-green)', padding: '2px 10px', borderRadius: '20px', marginBottom: '1rem', border: '1px solid var(--ui-green-pale)', fontWeight: '600' },
+  seccion:         { fontSize: '12px', fontWeight: '600', color: 'var(--ui-txt-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '1rem 0 0.5rem', borderTop: '1px solid var(--ui-border-subtle)', paddingTop: '0.75rem' },
   seccionSub:      { fontWeight: '400', textTransform: 'none', letterSpacing: 0, marginLeft: '4px' },
   nutriGrid:       { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '6px' },
-  nutriItem:       { background: '#fafaf9', borderRadius: '6px', padding: '8px 10px' },
-  nutriLabel:      { fontSize: '11px', color: '#78716c', marginBottom: '2px' },
-  nutriVal:        { fontSize: '13px', fontWeight: '500', color: '#1c1917' },
-  placeholder:     { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '200px', color: '#a8a29e', fontSize: '13px', textAlign: 'center' },
+  nutriItem:       { background: 'var(--ui-bg-page)', borderRadius: '8px', padding: '8px 10px', border: '1px solid var(--ui-border-subtle)' },
+  nutriLabel:      { fontSize: '11px', color: 'var(--ui-txt-muted)', marginBottom: '2px' },
+  nutriVal:        { fontSize: '13px', fontWeight: '600', color: 'var(--ui-txt-primary)' },
+  placeholder:     { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '200px', color: 'var(--ui-txt-muted)', fontSize: '13px', textAlign: 'center' },
 }

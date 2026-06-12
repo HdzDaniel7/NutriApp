@@ -20,10 +20,16 @@ export const PRESETS_MACROS = {
 export function calcularTMB({ sexo, edad, peso, talla, pctGrasa, formula = 'mifflin' }) {
   const e = parseFloat(edad), p = parseFloat(peso), t = parseFloat(talla)
   if (!e || !p || !t) return null
-  if (formula === 'mifflin')
-    return sexo === 'M' ? 10*p + 6.25*t - 5*e + 5 : 10*p + 6.25*t - 5*e - 161
-  if (formula === 'harris')
-    return sexo === 'M' ? 88.362 + 13.397*p + 4.799*t - 5.677*e : 447.593 + 9.247*p + 3.098*t - 4.330*e
+  if (formula === 'mifflin') {
+    if (sexo === 'M') return 10*p + 6.25*t - 5*e + 5
+    if (sexo === 'F') return 10*p + 6.25*t - 5*e - 161
+    return null
+  }
+  if (formula === 'harris') {
+    if (sexo === 'M') return 88.362 + 13.397*p + 4.799*t - 5.677*e
+    if (sexo === 'F') return 447.593 + 9.247*p + 3.098*t - 4.330*e
+    return null
+  }
   if (formula === 'katch') {
     const g = parseFloat(pctGrasa)
     if (!g) return null
@@ -41,6 +47,7 @@ export function calcularIMC(peso, talla) {
   else if (imc < 25) categoria = 'Normal'
   else if (imc < 30) categoria = 'Sobrepeso'
   else if (imc < 35) categoria = 'Obesidad I'
-  else               categoria = 'Obesidad II+'
+  else if (imc < 40) categoria = 'Obesidad II'
+  else               categoria = 'Obesidad III'
   return { valor: parseFloat(imc.toFixed(1)), categoria }
 }

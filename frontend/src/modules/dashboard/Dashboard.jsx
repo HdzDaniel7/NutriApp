@@ -1,33 +1,7 @@
 import { useState, useEffect } from 'react'
 import { patientsAPI, agendaAPI } from '../../services/api'
 import { useAuth } from '../../context/AuthContext'
- 
-/* ── Tokens locales (espejo de App.jsx) ── */
-const T = {
-  green:        '#3A7D52',
-  greenLight:   '#5A9E6F',
-  greenPale:    '#C8E0CC',
-  greenBg:      '#EBF4ED',
-  txtPrimary:   '#1E3A2A',
-  txtSecondary: '#4A6B55',
-  txtMuted:     '#8AA896',
-  border:       '#D8E8D2',
-  borderSubtle: '#EAF2E6',
-  bgCard:       '#FFFFFF',
-  bgPage:       '#F4F7F1',
-  earth:        '#8B6E52',
-  earthBg:      '#F5EDE4',
-  earthBorder:  '#E2CDB4',
-  blue:         '#2563EB',
-  blueBg:       '#EFF6FF',
-  blueBorder:   '#BFDBFE',
-  amber:        '#B45309',
-  amberBg:      '#FFFBEB',
-  amberBorder:  '#FDE68A',
-  purple:       '#6D28D9',
-  purpleBg:     '#F5F3FF',
-  purpleBorder: '#DDD6FE',
-}
+import { T, Card, StatCard, Empty, LeafRow } from '../../components/ui'
  
 /* ── SVG Íconos ── */
 const Ico = {
@@ -36,7 +10,6 @@ const Ico = {
   week:     (c) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
   month:    (c) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>,
   clock:    (c) => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>,
-  leaf:     () =>  <svg viewBox="0 0 18 18" fill="none" style={{ width: 13, height: 13 }}><path d="M9 16 Q7 13 6.5 10.5 Q6 8 8 6 Q8.5 8 9 9.5 Q9 7.5 10.5 5.5 Q12 7.5 12 9.5 Q12.5 8 13 6 Q15 8 14.5 10.5 Q14 13 11 16 Q10 16.3 9 16Z" fill={T.green}/></svg>,
 }
  
 const ESTADO_STYLE = {
@@ -48,41 +21,6 @@ const ESTADO_STYLE = {
  
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 const DIAS  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']
- 
-/* ── Componente tarjeta stat ── */
-function StatCard({ label, valor, accent, bgAccent, borderAccent, renderIcon }) {
-  return (
-    <div style={{
-      background: T.bgCard,
-      border: `1px solid ${T.border}`,
-      borderRadius: 14,
-      padding: '18px 20px',
-      display: 'flex', flexDirection: 'column', gap: 10,
-      position: 'relative', overflow: 'hidden',
-    }}>
-      {/* Franja lateral de color */}
-      <div style={{
-        position: 'absolute', left: 0, top: 0, bottom: 0, width: 3,
-        background: accent, borderRadius: '14px 0 0 14px',
-      }} />
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 12, color: T.txtMuted, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          {label}
-        </span>
-        <div style={{
-          width: 34, height: 34, borderRadius: 9,
-          background: bgAccent, border: `1px solid ${borderAccent}`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          {renderIcon(accent)}
-        </div>
-      </div>
-      <div style={{ fontSize: 36, fontWeight: 700, color: T.txtPrimary, lineHeight: 1 }}>
-        {valor}
-      </div>
-    </div>
-  )
-}
  
 /* ── Fila de cita ── */
 function CitaRow({ cita, showDate, onEstadoChange }) {
@@ -137,48 +75,6 @@ function CitaRow({ cita, showDate, onEstadoChange }) {
         <option value="cancelada">Cancelada</option>
         <option value="reagendada">Reagendada</option>
       </select>
-    </div>
-  )
-}
- 
-/* ── Card wrapper ── */
-function Card({ title, children, style = {} }) {
-  return (
-    <div style={{
-      background: T.bgCard,
-      border: `1px solid ${T.border}`,
-      borderRadius: 14,
-      padding: '20px',
-      ...style,
-    }}>
-      {title && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 7,
-          marginBottom: 14,
-          paddingBottom: 12,
-          borderBottom: `1px solid ${T.borderSubtle}`,
-        }}>
-          {Ico.leaf()}
-          <span style={{ fontSize: 12, fontWeight: 600, color: T.txtMuted, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {title}
-          </span>
-        </div>
-      )}
-      {children}
-    </div>
-  )
-}
- 
-/* ── Empty state ── */
-function Empty({ text }) {
-  return (
-    <div style={{
-      textAlign: 'center', padding: '28px 0',
-      fontSize: 13, color: T.txtMuted,
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-    }}>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={T.greenPale} strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
-      {text}
     </div>
   )
 }
@@ -244,11 +140,11 @@ export default function Dashboard() {
   const diasEnMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate()
   const primerDia = new Date(hoy.getFullYear(), hoy.getMonth(), 1).getDay()
  
-  /* Colores calendario — paleta botánica */
+  /* Colores calendario — paleta del tema activo */
   const calColor = (citas, esHoy) => {
     if (esHoy)    return { bg: T.blueBg,   border: T.blueBorder,  txt: T.blue,        fw: 700 }
     if (!citas)   return { bg: T.bgPage,   border: 'transparent', txt: T.txtMuted,    fw: 400 }
-    if (citas===1)return { bg: '#D1FAE5',  border: 'transparent', txt: T.txtSecondary,fw: 400 }
+    if (citas===1)return { bg: T.greenBg,  border: 'transparent', txt: T.txtSecondary,fw: 400 }
     if (citas<=3) return { bg: T.greenPale,border: 'transparent', txt: T.green,       fw: 500 }
     return               { bg: T.green,    border: 'transparent', txt: '#fff',        fw: 600 }
   }
@@ -272,16 +168,7 @@ export default function Dashboard() {
             {hoy.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
-        {/* Adorno simétrico de hojas */}
-        <div style={{ display: 'flex', gap: 5, opacity: 0.35 }}>
-          {[0, 1, 2, 1, 0].map((s, i) => (
-            <svg key={i} viewBox="0 0 18 18" fill="none"
-              style={{ width: 12 + s * 5, height: 12 + s * 5, transform: i > 2 ? 'scaleX(-1)' : 'none' }}>
-              <path d="M9 16 Q7 13 6.5 10.5 Q6 8 8 6 Q8.5 8 9 9.5 Q9 7.5 10.5 5.5 Q12 7.5 12 9.5 Q12.5 8 13 6 Q15 8 14.5 10.5 Q14 13 11 16 Q10 16.3 9 16Z"
-                fill={T.green} />
-            </svg>
-          ))}
-        </div>
+        <LeafRow />
       </div>
  
       {/* ── Stats ── */}
@@ -350,7 +237,7 @@ export default function Dashboard() {
         {/* Leyenda */}
         <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 14, justifyContent: 'flex-end' }}>
           <span style={{ fontSize: 11, color: T.txtMuted }}>Menos</span>
-          {[T.bgPage, '#D1FAE5', T.greenPale, T.green].map(c => (
+          {[T.bgPage, T.greenBg, T.greenPale, T.green].map(c => (
             <div key={c} style={{ width: 13, height: 13, borderRadius: 3, background: c, border: `1px solid ${T.border}` }} />
           ))}
           <span style={{ fontSize: 11, color: T.txtMuted }}>Más citas</span>

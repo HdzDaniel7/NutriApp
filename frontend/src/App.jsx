@@ -109,6 +109,9 @@ function PlanWrapper() {
       planId={state.planId || null}
       pacienteIdInicial={state.pacienteId || null}
       pacienteNombreInicial={state.pacienteNombre || null}
+      vctInicial={state.vctInicial || null}
+      distribucionInicial={state.distribucionInicial || null}
+      consultaIdInicial={state.consultaId || null}
     />
   )
 }

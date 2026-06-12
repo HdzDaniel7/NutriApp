@@ -4,20 +4,20 @@ const { calcularTMB, calcularGET, calcularMacros, calcularIMC } = require('../co
 
 // Calcular requerimientos completos
 router.post('/calcular', (req, res) => {
-  const { sexo, edad, peso, talla, pctGrasa, factorActividad, objetivo, distribucionMacros } = req.body
+  const { sexo, edad, peso, talla, pctGrasa, formula, factorActividad, objetivo, distribucionMacros } = req.body
 
   if (!sexo || !edad || !peso || !talla || !factorActividad) {
     return res.status(400).json({ error: 'Faltan datos requeridos: sexo, edad, peso, talla, factorActividad' })
   }
 
   try {
-    const tmb = calcularTMB({ sexo, edad, peso, talla, pctGrasa })
+    const tmb = calcularTMB({ sexo, edad, peso, talla, pctGrasa, formula })
     const get = calcularGET({ tmb, factorActividad })
     const vct = get + (objetivo || 0)
     const macros = calcularMacros({ vct, distribucionMacros, peso })
     const imc = calcularIMC({ peso, talla })
 
-    res.json({ tmb, get, vct, macros, imc })
+    res.json({ tmb: Math.round(tmb), get, vct, macros, imc })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }

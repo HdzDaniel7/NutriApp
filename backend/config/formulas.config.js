@@ -60,10 +60,12 @@ const PRESETS_MACROS = {
 // FUNCIONES DE CÁLCULO
 // ─────────────────────────────────────────────
 
+// Devuelve la TMB sin redondear: el redondeo se hace una sola vez al final
+// de la cadena TMB → GET → VCT para no acumular error (igual que el frontend).
 function calcularTMB({ sexo, edad, peso, talla, pctGrasa, formula = 'mifflin' }) {
   const f = FORMULAS_TMB[formula]
   if (!f) throw new Error(`Fórmula "${formula}" no existe`)
-  return Math.round(f.calcular({ sexo, edad, peso, talla, pctGrasa }))
+  return f.calcular({ sexo, edad, peso, talla, pctGrasa })
 }
 
 function calcularGET({ tmb, factorActividad }) {
@@ -92,7 +94,8 @@ function calcularIMC({ peso, talla }) {
   else if (imc < 25)   categoria = 'Normal'
   else if (imc < 30)   categoria = 'Sobrepeso'
   else if (imc < 35)   categoria = 'Obesidad I'
-  else                 categoria = 'Obesidad II+'
+  else if (imc < 40)   categoria = 'Obesidad II'
+  else                 categoria = 'Obesidad III'
 
   return { valor: parseFloat(imc.toFixed(1)), categoria }
 }

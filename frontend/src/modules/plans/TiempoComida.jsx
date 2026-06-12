@@ -116,10 +116,12 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
 
   const medidaActual = MEDIDAS_CASERAS.find(m => m.id === medidaSeleccionadaId)
 
+  // El input se mantiene como texto libre mientras se edita (permite quedar
+  // vacío al borrar); solo se propagan al plan los valores numéricos válidos.
   const handleGramosChange = (val) => {
+    setGramos(val)
     const g = parseFloat(val)
     if (isNaN(g) || g <= 0) return
-    setGramos(g)
     const medida = getMedidaPorGramos(g)
     setMedidaSeleccionadaId(medida?.id || null)
     if (onGramosChange) onGramosChange(entrada.id, g)
@@ -133,6 +135,8 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
         if (onGramosChange) onGramosChange(entrada.id, g)
     }
   }
+
+  const gramosValidos = parseFloat(gramos) > 0
 
   const handleGuardar = () => {
     const g = parseFloat(gramos)
@@ -229,7 +233,10 @@ function AlimentoFila({ entrada, editando, onEditar, onActualizar, onEliminar, o
             </div>
           )}
 
-          <button style={s.guardarBtn} onClick={handleGuardar}>
+          <button
+            style={gramosValidos ? s.guardarBtn : { ...s.guardarBtn, opacity: 0.5, cursor: 'not-allowed' }}
+            onClick={handleGuardar}
+            disabled={!gramosValidos}>
             Guardar porción
           </button>
         </div>

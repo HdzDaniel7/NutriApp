@@ -3,6 +3,7 @@ import { patientsAPI } from '../../services/api'
 import FormPaciente from './FormPaciente'
 import ExpedientePaciente from './ExpedientePaciente'
 import { Mail, Phone, Users } from 'lucide-react'
+import { PageHeader } from '../../components/ui'
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState([])
@@ -60,13 +61,12 @@ export default function Pacientes() {
   }
 
   return (
-    <div>
-      <div style={s.topBar}>
-        <h1 style={s.h1}>Pacientes</h1>
+    <div className="nd-page" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <PageHeader titulo="Pacientes" subtitulo="Expedientes, consultas y planes de tus pacientes">
         <button style={s.btnPrimario} onClick={() => { setPacienteEditando(null); setModalAbierto(true) }}>
           + Nuevo paciente
         </button>
-      </div>
+      </PageHeader>
 
       {/* Buscador */}
       <div style={s.card}>
@@ -84,7 +84,7 @@ export default function Pacientes() {
         <div style={s.msg}>Cargando pacientes...</div>
       ) : pacientes.length === 0 ? (
         <div style={s.emptyState}>
-          <div style={s.emptyIcon}><Users size={48} strokeWidth={1.2} color="#d6d3d1"/></div>
+          <div style={s.emptyIcon}><Users size={48} strokeWidth={1.2} color="var(--ui-green-pale)"/></div>
           <div style={s.emptyTitulo}>
             {busqueda ? 'No se encontraron pacientes' : 'Aún no hay pacientes registrados'}
           </div>
@@ -149,29 +149,27 @@ export default function Pacientes() {
 }
 
 const s = {
-  topBar:          { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' },
-  h1:              { fontSize: '22px', fontWeight: '600', color: '#1c1917', margin: 0 },
-  btnPrimario:     { padding: '8px 18px', borderRadius: '8px', border: 'none', background: 'var(--color-primario)', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '500' },
-  btnSecundario:   { padding: '6px 14px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', fontSize: '13px', color: '#57534e', cursor: 'pointer' },
-  btnPeligro:      { padding: '6px 14px', borderRadius: '6px', border: 'none', background: '#fef2f2', fontSize: '13px', color: '#ef4444', cursor: 'pointer' },
-  card:            { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '10px', padding: '1rem', marginBottom: '1rem' },
-  input:           { width: '100%', padding: '8px 12px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none', boxSizing: 'border-box' },
-  msg:             { textAlign: 'center', padding: '3rem', fontSize: '14px', color: '#a8a29e' },
-  emptyState:      { textAlign: 'center', padding: '4rem 2rem' },
+  btnPrimario:     { padding: '8px 18px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '13.5px', cursor: 'pointer', fontWeight: '600', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' },
+  btnSecundario:   { padding: '6px 14px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', background: '#fff', fontSize: '13px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  btnPeligro:      { padding: '6px 14px', borderRadius: '8px', border: '1px solid #FECACA', background: '#FEF2F2', fontSize: '13px', color: '#DC2626', cursor: 'pointer' },
+  card:            { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '14px 16px' },
+  input:           { width: '100%', padding: '8px 12px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: 'var(--ui-txt-primary)' },
+  msg:             { textAlign: 'center', padding: '3rem', fontSize: '14px', color: 'var(--ui-txt-muted)' },
+  emptyState:      { textAlign: 'center', padding: '4rem 2rem', background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px' },
   emptyIcon:       { fontSize: '48px', marginBottom: '1rem' },
-  emptyTitulo:     { fontSize: '16px', fontWeight: '500', color: '#1c1917', marginBottom: '8px' },
-  emptyDesc:       { fontSize: '13px', color: '#78716c' },
-  grid:            { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' },
-  pacienteCard:    { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '10px', padding: '1.25rem' },
+  emptyTitulo:     { fontSize: '16px', fontWeight: '600', color: 'var(--ui-txt-primary)', marginBottom: '8px' },
+  emptyDesc:       { fontSize: '13px', color: 'var(--ui-txt-muted)' },
+  grid:            { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' },
+  pacienteCard:    { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '18px 20px' },
   pacienteHeader:  { display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '10px' },
-  avatar:          { width: '40px', height: '40px', borderRadius: '50%', background: 'var(--color-primario-bg)', color: 'var(--color-primario)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '600', flexShrink: 0 },
+  avatar:          { width: '40px', height: '40px', borderRadius: '50%', background: 'var(--ui-green-bg)', color: 'var(--ui-green)', border: '1.5px solid var(--ui-green-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '700', flexShrink: 0 },
   pacienteInfo:    { flex: 1 },
-  pacienteNombre:  { fontSize: '15px', fontWeight: '600', color: '#1c1917', marginBottom: '4px' },
+  pacienteNombre:  { fontSize: '15px', fontWeight: '600', color: 'var(--ui-txt-primary)', marginBottom: '4px' },
   pacienteMeta:    { display: 'flex', gap: '6px', flexWrap: 'wrap' },
-  badge:           { fontSize: '11px', background: '#f5f5f4', color: '#78716c', padding: '2px 8px', borderRadius: '20px' },
+  badge:           { fontSize: '11px', background: 'var(--ui-green-bg)', color: 'var(--ui-txt-secondary)', padding: '2px 8px', borderRadius: '20px', border: '1px solid var(--ui-border-subtle)' },
   pacienteContacto:{ marginBottom: '8px' },
-  contactoItem:    { fontSize: '12px', color: '#57534e', marginBottom: '2px' },
-  pacienteNotas:   { fontSize: '12px', color: '#78716c', background: '#fafaf9', borderRadius: '6px', padding: '6px 10px', marginBottom: '10px', lineHeight: 1.5 },
-  pacienteAcciones:{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px', borderTop: '1px solid #f5f5f4', paddingTop: '10px' },
-  btnExpediente:   { padding: '6px 14px', borderRadius: '6px', border: 'none', background: 'var(--color-primario-bg)', fontSize: '13px', color: 'var(--color-primario)', cursor: 'pointer', fontWeight: '500' },
+  contactoItem:    { fontSize: '12px', color: 'var(--ui-txt-secondary)', marginBottom: '2px' },
+  pacienteNotas:   { fontSize: '12px', color: 'var(--ui-txt-muted)', background: 'var(--ui-bg-page)', borderRadius: '8px', padding: '6px 10px', marginBottom: '10px', lineHeight: 1.5, border: '1px solid var(--ui-border-subtle)' },
+  pacienteAcciones:{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '10px', borderTop: '1px solid var(--ui-border-subtle)', paddingTop: '10px' },
+  btnExpediente:   { padding: '6px 14px', borderRadius: '8px', border: 'none', background: 'var(--ui-green-bg)', fontSize: '13px', color: 'var(--ui-green)', cursor: 'pointer', fontWeight: '600' },
 }

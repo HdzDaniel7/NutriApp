@@ -130,7 +130,10 @@ router.get('/:id/consultas', (req, res) => {
 
 // POST /api/patients/:id/consultas
 router.post('/:id/consultas', (req, res) => {
-  const { fecha, peso, talla, pct_grasa, imc, cintura, cadera, notas } = req.body
+  const {
+    fecha, peso, talla, pct_grasa, imc, cintura, cadera, notas,
+    formula_tmb, factor_actividad, objetivo_kcal, tmb_kcal, get_kcal, vct_kcal, distribucion_macros,
+  } = req.body
   if (!fecha) return res.status(400).json({ error: 'La fecha es requerida' })
 
   try {
@@ -138,9 +141,17 @@ router.post('/:id/consultas', (req, res) => {
       return res.status(404).json({ error: 'Paciente no encontrado' })
 
     const result = db.prepare(`
-      INSERT INTO consultas (paciente_id, fecha, peso, talla, pct_grasa, imc, cintura, cadera, notas)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(req.params.id, fecha, peso, talla, pct_grasa, imc, cintura, cadera, notas)
+      INSERT INTO consultas (
+        paciente_id, fecha, peso, talla, pct_grasa, imc, cintura, cadera, notas,
+        formula_tmb, factor_actividad, objetivo_kcal, tmb_kcal, get_kcal, vct_kcal, distribucion_macros
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      req.params.id, fecha, peso, talla, pct_grasa, imc, cintura, cadera, notas,
+      formula_tmb || null, factor_actividad || null, objetivo_kcal ?? null,
+      tmb_kcal || null, get_kcal || null, vct_kcal || null,
+      distribucion_macros ? JSON.stringify(distribucion_macros) : null,
+    )
 
     const consulta = db.prepare(`SELECT * FROM consultas WHERE id = ?`).get(result.lastInsertRowid)
     res.status(201).json(consulta)

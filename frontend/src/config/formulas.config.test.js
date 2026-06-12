@@ -89,9 +89,14 @@ describe('calcularIMC — categorías', () => {
     expect(r.categoria).toBe('Obesidad I')
   })
 
-  it('38+ → Obesidad II+ (115 kg, 170 cm)', () => {
-    const r = calcularIMC(115, 170)
-    expect(r.categoria).toBe('Obesidad II+')
+  it('38+ → Obesidad II (112 kg, 170 cm)', () => {
+    const r = calcularIMC(112, 170)   // IMC ≈ 38.8
+    expect(r.categoria).toBe('Obesidad II')
+  })
+
+  it('40+ → Obesidad III (120 kg, 170 cm)', () => {
+    const r = calcularIMC(120, 170)   // IMC ≈ 41.5
+    expect(r.categoria).toBe('Obesidad III')
   })
 })
 

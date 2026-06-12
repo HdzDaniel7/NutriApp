@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { agendaAPI, patientsAPI } from '../../services/api'
 import { Settings, Calendar, UtensilsCrossed, Pencil, X } from 'lucide-react'
+import { PageHeader } from '../../components/ui'
 
 const DIAS_SEMANA = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
@@ -111,14 +112,11 @@ export default function Agenda() {
   }
 
   return (
-    <div>
-      <div style={s.topBar}>
-        <h1 style={s.h1}>Agenda</h1>
-        <div style={s.topAcciones}>
-          <button style={s.btnSecundario} onClick={() => setModalConfig(true)}><Settings size={14} style={{verticalAlign:"middle",marginRight:5}}/>Configurar horario</button>
-          <button style={s.btnPrimario} onClick={() => { setCitaEditando(null); setModalCita(true) }}>+ Nueva cita</button>
-        </div>
-      </div>
+    <div className="nd-page" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <PageHeader titulo="Agenda" subtitulo="Citas y horarios de consulta">
+        <button style={s.btnSecundario} onClick={() => setModalConfig(true)}><Settings size={14} style={{verticalAlign:"middle",marginRight:5}}/>Configurar horario</button>
+        <button style={s.btnPrimario} onClick={() => { setCitaEditando(null); setModalCita(true) }}>+ Nueva cita</button>
+      </PageHeader>
 
       {/* Tabs */}
       <div style={s.tabs}>
@@ -205,7 +203,7 @@ export default function Agenda() {
           <div style={s.horariosPanel}>
             {!diaSeleccionado ? (
               <div style={s.sinDia}>
-                <div style={s.sinDiaIcon}><Calendar size={32} color="#d6d3d1" strokeWidth={1.2}/></div>
+                <div style={s.sinDiaIcon}><Calendar size={32} color="var(--ui-green-pale)" strokeWidth={1.2}/></div>
                 <div>Selecciona un día para ver los horarios</div>
               </div>
             ) : (
@@ -570,83 +568,80 @@ function FormConfig({ config, onGuardar, onCerrar }) {
 }
 
 const s = {
-  topBar:            { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' },
-  h1:                { fontSize: '22px', fontWeight: '600', color: '#1c1917', margin: 0 },
-  topAcciones:       { display: 'flex', gap: '8px' },
-  btnPrimario:       { padding: '8px 18px', borderRadius: '8px', border: 'none', background: 'var(--color-primario)', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '500' },
-  btnPrimarioSm:     { padding: '5px 12px', borderRadius: '6px', border: 'none', background: 'var(--color-primario)', color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: '500' },
-  btnSecundario:     { padding: '8px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', fontSize: '14px', color: '#57534e', cursor: 'pointer' },
-  tabs:              { display: 'flex', gap: '4px', marginBottom: '1rem' },
-  tab:               { padding: '7px 16px', borderRadius: '20px', border: 'none', background: 'transparent', fontSize: '13px', color: '#57534e', cursor: 'pointer' },
-  tabActive:         { background: 'var(--color-primario-bg)', color: 'var(--color-primario)', fontWeight: '500' },
-  calendarioLayout:  { display: 'grid', gridTemplateColumns: '320px 1fr', gap: '1rem', alignItems: 'start' },
-  calendarioCard:    { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '12px', padding: '1.25rem' },
+  btnPrimario:       { padding: '8px 18px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '13.5px', cursor: 'pointer', fontWeight: '600', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' },
+  btnPrimarioSm:     { padding: '5px 12px', borderRadius: '8px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '12px', cursor: 'pointer', fontWeight: '600' },
+  btnSecundario:     { padding: '8px 16px', borderRadius: '10px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', background: '#fff', fontSize: '13.5px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  tabs:              { display: 'flex', gap: '4px' },
+  tab:               { padding: '7px 16px', borderRadius: '20px', border: '1px solid transparent', background: 'transparent', fontSize: '13px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  tabActive:         { background: 'var(--ui-green-bg)', color: 'var(--ui-green)', fontWeight: '600', border: '1px solid var(--ui-green-pale)' },
+  calendarioLayout:  { display: 'grid', gridTemplateColumns: '320px 1fr', gap: '14px', alignItems: 'start' },
+  calendarioCard:    { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '20px' },
   mesNav:            { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' },
-  navBtn:            { background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: '#57534e', padding: '4px 8px', borderRadius: '6px' },
-  mesLabel:          { fontSize: '15px', fontWeight: '600', color: '#1c1917' },
+  navBtn:            { background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: 'var(--ui-txt-secondary)', padding: '4px 8px', borderRadius: '6px' },
+  mesLabel:          { fontSize: '15px', fontWeight: '600', color: 'var(--ui-txt-primary)' },
   semanaCabecera:    { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '6px' },
-  diaSemanaLabel:    { fontSize: '11px', color: '#a8a29e', textAlign: 'center', padding: '4px 0', fontWeight: '500' },
+  diaSemanaLabel:    { fontSize: '11px', color: 'var(--ui-txt-muted)', textAlign: 'center', padding: '4px 0', fontWeight: '600' },
   diasGrid:          { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '2px' },
   diaBtn:            { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '4px 2px', borderRadius: '6px', cursor: 'pointer', minHeight: '36px', background: 'transparent' },
-  diaHoy:            { background: 'var(--color-primario-bg)', borderRadius: '6px' },
-  diaSeleccionado:   { background: '#16a34a', borderRadius: '6px' },
+  diaHoy:            { background: '#EFF6FF', border: '1.5px solid #BFDBFE', borderRadius: '6px' },
+  diaSeleccionado:   { background: 'var(--ui-green)', borderRadius: '6px' },
   diaPasado:         { opacity: 0.45 },
-  diaNum:            { fontSize: '12px', color: '#1c1917', fontWeight: '500' },
+  diaNum:            { fontSize: '12px', color: 'var(--ui-txt-primary)', fontWeight: '500' },
   citaIndicadores:   { display: 'flex', gap: '2px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '2px' },
   citaDot:           { width: '5px', height: '5px', borderRadius: '50%' },
-  masIndicador:      { fontSize: '8px', color: '#78716c' },
-  leyenda:           { display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #f5f5f4' },
+  masIndicador:      { fontSize: '8px', color: 'var(--ui-txt-muted)' },
+  leyenda:           { display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--ui-border-subtle)' },
   leyendaItem:       { display: 'flex', alignItems: 'center', gap: '4px' },
   leyendaDot:        { width: '8px', height: '8px', borderRadius: '50%' },
-  leyendaLabel:      { fontSize: '11px', color: '#78716c' },
-  horariosPanel:     { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '12px', padding: '1.25rem', minHeight: '400px' },
-  sinDia:            { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '12px', color: '#a8a29e', fontSize: '13px' },
+  leyendaLabel:      { fontSize: '11px', color: 'var(--ui-txt-muted)' },
+  horariosPanel:     { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '20px', minHeight: '400px' },
+  sinDia:            { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '12px', color: 'var(--ui-txt-muted)', fontSize: '13px' },
   sinDiaIcon:        { fontSize: '40px' },
-  horarioHeader:     { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '10px', borderBottom: '1px solid #f5f5f4' },
-  horarioTitulo:     { fontSize: '15px', fontWeight: '600', color: '#1c1917' },
-  sinConfig:         { fontSize: '13px', color: '#a8a29e', textAlign: 'center', padding: '2rem' },
+  horarioHeader:     { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '10px', borderBottom: '1px solid var(--ui-border-subtle)' },
+  horarioTitulo:     { fontSize: '15px', fontWeight: '600', color: 'var(--ui-txt-primary)' },
+  sinConfig:         { fontSize: '13px', color: 'var(--ui-txt-muted)', textAlign: 'center', padding: '2rem' },
   slotsList:         { display: 'flex', flexDirection: 'column', gap: '6px' },
   slot:              { borderRadius: '8px', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  slotLibre:         { background: 'var(--color-primario-bg)', borderWidth: '1px', borderStyle: 'dashed', borderColor: 'var(--color-primario-border)' },
-  slotOcupado:       { background: '#fff', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4' },
-  slotDescanso:      { background: '#fafaf9', borderWidth: '1px', borderStyle: 'solid', borderColor: '#f5f5f4', opacity: 0.7 },
-  slotHora:          { fontSize: '12px', fontWeight: '500', color: '#57534e', minWidth: '90px' },
-  slotDescLabel:     { fontSize: '12px', color: '#a8a29e' },
-  slotLibreBtn:      { fontSize: '12px', color: '#16a34a', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500' },
+  slotLibre:         { background: 'var(--ui-green-bg)', borderWidth: '1px', borderStyle: 'dashed', borderColor: 'var(--ui-green-pale)' },
+  slotOcupado:       { background: '#fff', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)' },
+  slotDescanso:      { background: 'var(--ui-bg-page)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border-subtle)', opacity: 0.7 },
+  slotHora:          { fontSize: '12px', fontWeight: '500', color: 'var(--ui-txt-secondary)', minWidth: '90px' },
+  slotDescLabel:     { fontSize: '12px', color: 'var(--ui-txt-muted)' },
+  slotLibreBtn:      { fontSize: '12px', color: 'var(--ui-green)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '600' },
   citaInfo:          { flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  citaPaciente:      { fontSize: '13px', fontWeight: '500', color: '#1c1917' },
+  citaPaciente:      { fontSize: '13px', fontWeight: '500', color: 'var(--ui-txt-primary)' },
   citaAcciones:      { display: 'flex', alignItems: 'center', gap: '6px' },
-  estadoBadge:       { fontSize: '11px', padding: '2px 8px', borderRadius: '20px', fontWeight: '500' },
-  editCitaBtn:       { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: '2px 4px' },
-  deleteCitaBtn:     { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', color: '#ef4444', padding: '2px 4px' },
-  card:              { background: '#fff', border: '1px solid #e7e5e4', borderRadius: '12px', padding: '1.25rem' },
+  estadoBadge:       { fontSize: '11px', padding: '2px 8px', borderRadius: '20px', fontWeight: '600' },
+  editCitaBtn:       { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', padding: '2px 4px', color: 'var(--ui-txt-muted)' },
+  deleteCitaBtn:     { background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', color: '#DC2626', padding: '2px 4px' },
+  card:              { background: '#fff', border: '1px solid var(--ui-border)', borderRadius: '14px', padding: '20px' },
   buscarHeader:      { marginBottom: '1rem' },
-  buscarInput:       { width: '100%', padding: '8px 12px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none', boxSizing: 'border-box' },
-  sinDatos:          { fontSize: '13px', color: '#a8a29e', textAlign: 'center', padding: '2rem' },
-  citaBusquedaRow:   { padding: '12px 0', borderBottom: '1px solid #f5f5f4' },
-  citaBusquedaFecha: { fontSize: '12px', color: '#78716c', marginBottom: '4px' },
+  buscarInput:       { width: '100%', padding: '8px 12px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', fontSize: '14px', outline: 'none', boxSizing: 'border-box', color: 'var(--ui-txt-primary)' },
+  sinDatos:          { fontSize: '13px', color: 'var(--ui-txt-muted)', textAlign: 'center', padding: '2rem' },
+  citaBusquedaRow:   { padding: '12px 0', borderBottom: '1px solid var(--ui-border-subtle)' },
+  citaBusquedaFecha: { fontSize: '12px', color: 'var(--ui-txt-muted)', marginBottom: '4px' },
   citaBusquedaInfo:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  citaBusquedaNombre:{ fontSize: '14px', fontWeight: '500', color: '#1c1917' },
-  citaBusquedaNotas: { fontSize: '12px', color: '#78716c', marginTop: '4px' },
+  citaBusquedaNombre:{ fontSize: '14px', fontWeight: '500', color: 'var(--ui-txt-primary)' },
+  citaBusquedaNotas: { fontSize: '12px', color: 'var(--ui-txt-muted)', marginTop: '4px' },
 }
 
 const m = {
-  overlay:    { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' },
-  modal:      { background: '#fff', borderRadius: '12px', width: '100%', maxWidth: '500px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
-  header:     { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem', borderBottom: '1px solid #e7e5e4' },
-  titulo:     { fontSize: '16px', fontWeight: '600', color: '#1c1917' },
-  cerrarBtn:  { background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', color: '#78716c' },
+  overlay:    { position: 'fixed', inset: 0, background: 'rgba(20,40,28,0.45)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(2px)' },
+  modal:      { background: '#fff', borderRadius: '14px', width: '100%', maxWidth: '500px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid var(--ui-border)' },
+  header:     { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--ui-border)' },
+  titulo:     { fontSize: '16px', fontWeight: '600', color: 'var(--ui-txt-primary)' },
+  cerrarBtn:  { background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', color: 'var(--ui-txt-muted)' },
   body:       { padding: '1.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' },
   grid2:      { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' },
   field:      { display: 'flex', flexDirection: 'column', gap: '4px' },
-  label:      { fontSize: '13px', color: '#57534e', fontWeight: '500' },
-  input:      { padding: '8px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none', background: '#fff' },
-  textarea:   { padding: '8px 10px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#d6d3d1', fontSize: '14px', outline: 'none', resize: 'vertical', fontFamily: 'inherit' },
-  error:      { background: '#fef2f2', borderRadius: '6px', padding: '8px 12px', fontSize: '13px', color: '#ef4444' },
-  footer:     { display: 'flex', gap: '8px', justifyContent: 'flex-end', padding: '1rem 1.5rem', borderTop: '1px solid #e7e5e4' },
-  cancelarBtn:{ padding: '8px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fff', fontSize: '14px', color: '#57534e', cursor: 'pointer' },
-  guardarBtn: { padding: '8px 20px', borderRadius: '8px', border: 'none', background: 'var(--color-primario)', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '500' },
+  label:      { fontSize: '13px', color: 'var(--ui-txt-secondary)', fontWeight: '500' },
+  input:      { padding: '8px 10px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', fontSize: '14px', outline: 'none', background: '#fff', color: 'var(--ui-txt-primary)' },
+  textarea:   { padding: '8px 10px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', fontSize: '14px', outline: 'none', resize: 'vertical', fontFamily: 'inherit', color: 'var(--ui-txt-primary)' },
+  error:      { background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', color: '#DC2626' },
+  footer:     { display: 'flex', gap: '8px', justifyContent: 'flex-end', padding: '1rem 1.5rem', borderTop: '1px solid var(--ui-border)' },
+  cancelarBtn:{ padding: '8px 16px', borderRadius: '10px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', background: '#fff', fontSize: '14px', color: 'var(--ui-txt-secondary)', cursor: 'pointer' },
+  guardarBtn: { padding: '8px 20px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, var(--ui-green-light), var(--ui-green))', color: '#fff', fontSize: '14px', cursor: 'pointer', fontWeight: '600' },
   diasGrid:   { display: 'flex', gap: '6px' },
-  diaBtn:     { flex: 1, padding: '6px 4px', borderRadius: '6px', borderWidth: '1px', borderStyle: 'solid', borderColor: '#e7e5e4', background: '#fafaf9', fontSize: '12px', color: '#57534e', cursor: 'pointer', textAlign: 'center' },
-  diaBtnActive:{ background: 'var(--color-primario-bg)', borderColor: 'var(--color-primario-border)', color: 'var(--color-primario)', fontWeight: '500' },
+  diaBtn:     { flex: 1, padding: '6px 4px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--ui-border)', background: '#fff', fontSize: '12px', color: 'var(--ui-txt-secondary)', cursor: 'pointer', textAlign: 'center' },
+  diaBtnActive:{ background: 'var(--ui-green-bg)', borderColor: 'var(--ui-green-pale)', color: 'var(--ui-green)', fontWeight: '600' },
 }
